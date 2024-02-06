@@ -8,18 +8,16 @@ asm_sources = $(source_dir)/boot.asm
 
 qemu = qemu-system-i386 
 
-all: kernel move
+all: kernel
 	$(qemu) $(build_dir)/kernel.bin
 
-move:
-	cp kernel.bin $(build_dir)
-
 kernel: $(sources)
-	$(nasm) $(asm_sources) $(nasm_flags) -o kernel.bin
+	$(nasm) $(asm_sources) $(nasm_flags) -o $(build_dir)/kernel.bin
 
 clean:
-	rm kernel.bin
 	rm $(build_dir)/kernel.bin
 
 debug:
-	od -t x1 -A n kernel.bin
+	@ if ! od -t x1 -A n $(build_dir)/kernel.bin; then \
+		echo 'Run "make kernel" to build a binary first!'; \
+	fi
