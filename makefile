@@ -1,10 +1,9 @@
 build_dir = ./build
 source_dir = ./src
 
-
 nasm = nasm
 nasm_flags = -f bin
-asm_sources = $(source_dir)/boot.asm
+asm_sources = boot.asm
 
 qemu = qemu-system-i386 
 
@@ -12,7 +11,8 @@ all: kernel
 	$(qemu) $(build_dir)/kernel.bin
 
 kernel: $(sources)
-	$(nasm) $(asm_sources) $(nasm_flags) -o $(build_dir)/kernel.bin
+	cd $(source_dir) && $(nasm) $(asm_sources) $(nasm_flags) -o kernel.bin && cd ..
+	mv $(source_dir)/kernel.bin $(build_dir)/
 
 clean:
 	rm $(build_dir)/kernel.bin
