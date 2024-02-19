@@ -3,8 +3,6 @@
 ; Effectively, it allows us to put an offset of 0x7c00 on the assembly addresses -
 ; meaning that we are clear of the BIOS vector tables/configurations in the memory.
 
-%include "print.asm"
-
 mov bp, 0x8000 
 ; sub bp, 0x7C00 ; this should be 0x400 above the origin point now.
 mov sp, bp
@@ -18,12 +16,6 @@ mov sp, bp
 ; @todo Read CHS 0 to load OS
 ; @todo Enable 32-bit protected mode
 
-
-mov cx, MSG_1
-call prints
-
-MSG_1:
-  db "err, hello", 0xA, 0x0 ; null string
 
 jmp $
 
