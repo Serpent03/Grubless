@@ -3,24 +3,29 @@
 ; Effectively, it allows us to put an offset of 0x7c00 on the assembly addresses -
 ; meaning that we are clear of the BIOS vector tables/configurations in the memory.
 
-jmp   _start
+jmp   _start ; this is required. otherwise it will start routines in the teletype.asm file.
 %include "teletype.asm"
+%include "math.asm"
 
-; Moving the ah <- 0E tells the BIOS we're going to commit the 
-; TELETYPE ROUTINE. Setting character into al, and then calling
-; INT 0x10 lets the BIOS know to put that value at the VMEM address.
+mov   bp, 0x8000 ; @fix enable this through the stack segment instead.
+mov   sp, bp
 
-; @todo set up the stack and data segment
+; @todo Enable 32-bit protected mode
 ; @todo Get an entry into the main() C routine
 ; @todo Read CHS 0 to load OS(??)
-; @todo Enable 32-bit protected mode
 ; @todo File system implementation? FAT16 please..
 
-_start:
+_start: ; this is pretty much where the bootloader logic starts.
   mov   eax, text
   call  printsln
   mov   eax, title
-  call  prints
+  call  printsln
+
+  mov   eax, 256
+  call  printwln
+
+  ; mov   eax, ebx
+  ; call  printch
 
 text  db "Hi there", 0x0
 title db "this is the title", 0x0
