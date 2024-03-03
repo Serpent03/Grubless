@@ -6,7 +6,6 @@
 
 mov   [boot_addr], dl ; the BIOS stores boot drive address in dl on init.
 
-mov   eax, 0x8000
 mov   ebp, 0x8000 ; @fix enable this through the stack segment instead.
 mov   esp, ebp ; @fix ebp is showing 0x0000 during printwln calls for some reason.
 
@@ -17,23 +16,21 @@ jmp   _start ; this is required. otherwise it will start routines in the teletyp
 %include "utils.asm"
 %include "disk.asm"
 
-; @todo Read CHS 0 to load OS(??)
 ; @todo Enable 32-bit protected mode
 ; @todo Get an entry into the main() C routine
 ; @todo File system implementation? FAT16 please..
 
 _start: ; this is pretty much where the bootloader logic starts.
 
-  ; @todo fix the drive read errors.
-  mov   dh, 5
-  mov   dl, [boot_addr] ; drive address ?
+  mov   bx, 0x9000
+  mov   dh, 1 ; number of sectors to read
+  mov   dl, [boot_addr] ; drive address as reported by BIOS on init
   call  read_disk
 
-  mov   eax, [0x9000]
-  call  printwln
+  mov   eax, 0x9000
+  call  printsln
 
 
-msg   db "Hi", 0x0
 boot_addr: db 0
 
 jmp $
@@ -44,6 +41,7 @@ db 0x55
 db 0xAA
 
 
-times 256   dw 0xdada ; for now, this is our boot drive
+times 512   db '!' ; for now, this is our boot drive
+times 1     db "HI THERE FROM THE OS LAND!!", 0x0
 times 256   dw 0xface ; since BIOS only loads the first 512 bytes
 ; we can verify if it read beyond that, by allocating the total file to be more than 512 bytes.
