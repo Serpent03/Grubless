@@ -3,9 +3,11 @@
 ; Effectively, it allows us to put an offset of 0x7c00 on the assembly addresses -
 ; meaning that we are clear of the BIOS vector tables/configurations in the memory.
 
-mov bp, 0x8000 
-; sub bp, 0x7C00 ; this should be 0x400 above the origin point now.
-mov sp, bp
+; mov bp, 0x8000 
+; mov sp, bp
+
+jmp   _start
+%include "teletype.asm"
 
 ; Moving the ah <- 0E tells the BIOS we're going to commit the 
 ; TELETYPE ROUTINE. Setting character into al, and then calling
@@ -13,9 +15,19 @@ mov sp, bp
 
 ; @todo set up the stack and data segment
 ; @todo Get an entry into the main() C routine
-; @todo Read CHS 0 to load OS
+; @todo Read CHS 0 to load OS(??)
 ; @todo Enable 32-bit protected mode
+; @todo File system implementation?
 
+_start:
+  mov   eax, text
+  call  printsln
+  mov   eax, title
+  call  prints
+
+
+text  db "Hi there", 0x0
+title db "this is the title", 0x0
 
 jmp $
 
