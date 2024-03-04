@@ -22,9 +22,8 @@ jmp   _start ; this is required. otherwise it will start routines in the teletyp
 
 _start: ; this is pretty much where the bootloader logic starts.
 
-  mov   bx, 0x9000
-  mov   dh, 1 ; number of sectors to read
-  mov   dl, [boot_addr] ; drive address as reported by BIOS on init
+  call  debug_regs
+
   call  read_disk
 
   mov   eax, 0x9000
@@ -41,7 +40,10 @@ db 0x55
 db 0xAA
 
 
-times 512   db '!' ; for now, this is our boot drive
-times 1     db "HI THERE FROM THE OS LAND!!", 0x0
-times 256   dw 0xface ; since BIOS only loads the first 512 bytes
+times 512   db '!' ; 2nd sector
+times 256   dw 0xface ; 3rd sector
+times 1     db "HI THERE FROM THE OS LAND!!", 0x0 ; 4th sector
+
+; for now, this is our boot drive
+; since BIOS only loads the first 512 bytes
 ; we can verify if it read beyond that, by allocating the total file to be more than 512 bytes.
