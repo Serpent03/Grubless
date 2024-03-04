@@ -4,6 +4,7 @@
 ; Effectively, it allows us to put an offset of 0x7c00 on the assembly addresses -
 ; meaning that we are clear of the BIOS vector tables/configurations in the memory.
 
+; @todo figure out how to read a mounted device(in this case, /hd0)
 mov   [boot_addr], dl ; the BIOS stores boot drive address in dl on init.
 
 mov   ebp, 0x8000 ; @fix enable this through the stack segment instead.
