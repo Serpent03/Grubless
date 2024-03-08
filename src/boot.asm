@@ -1,4 +1,4 @@
-[ bits 16 ]
+[ bits 32 ]
 [ org 0x7C00 ] 
 ; https://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf; page 18.
 ; Effectively, it allows us to put an offset of 0x7c00 on the assembly addresses -
@@ -18,8 +18,9 @@ jmp   _start ; this is required. otherwise it will start routines in the teletyp
 %include "disk.asm"
 
 ; @todo Enable 32-bit protected mode
-; @todo get address of secondary drives
+; @fix translate all 16-bit routines to 32-bit.
 ; @todo Get an entry into the main() C routine
+; @todo get address of secondary drives
 ; @todo File system implementation? FAT16 please..
 
 _start: ; this is pretty much where the bootloader logic starts.

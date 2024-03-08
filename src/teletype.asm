@@ -1,3 +1,6 @@
+VMEM   equ 0xb8000 ; location of the video memory
+WHITE_BLACK   equ 0x0F ; 0xFB :: Foreground color, Background color
+
 prints:
   pusha 
   mov   esi, eax
@@ -31,6 +34,7 @@ printch:
   ; Moving the ah <- 0E tells the BIOS we're going to commit the 
   ; TELETYPE ROUTINE. Setting character into al, and then calling
   ; INT 0x10 lets the BIOS know to print that character on the screen.
+  ; @todo shift to utilizing video memory
   mov   ah, 0x0E
   INT   0x10 ; at this point, we're assuming that the chars are already loaded into al
   ret

@@ -8,9 +8,9 @@ disk_routine:
   mov   ah, 0x02 ; bios read sector function
   mov   al, dh ; num_sectors_to_read
   mov   ch, 0 ; cylinder
+  mov   cl, 3 ; sector. 1-indexed 
   mov   dh, 0 ; head. 0-indexed
   ; mov   dl, 0 ; drive address(from bios start)
-  mov   cl, 3 ; sector. 1-indexed 
 
   INT   0x13 ; issue the actual interrupt
 
@@ -37,11 +37,14 @@ read_disk:
   ; ebx = cylinder | head
   ; ecx = 0x0000 | sector
   ; return void
-  pusha ; @todo add functionality to pass arguments to this function
+  ; @todo add functionality to pass arguments to this function
+
+  pusha 
 
   mov   bx, 0
   mov   es, bx
   mov   bx, 0x9000 ; reads the data to a location referenced by es:bx
+
   mov   dh, 2 ; number of sectors to read
   mov   dl, [boot_addr] ; drive address as reported by BIOS on init
 
