@@ -18,12 +18,13 @@ jmp   _start ; this is required. otherwise it will start routines in the teletyp
 %include "disk.asm"
 
 ; @todo Enable 32-bit protected mode
+; @todo get address of secondary drives
 ; @todo Get an entry into the main() C routine
 ; @todo File system implementation? FAT16 please..
 
 _start: ; this is pretty much where the bootloader logic starts.
 
-  call  debug_regs
+  call  debug_regs 
 
   call  read_disk
 

@@ -1,13 +1,13 @@
 prints:
   pusha 
-  mov   ecx, eax ; @todo see if only eax can be used for the whole op.
+  mov   esi, eax
+  cld ; clear the direction flag.
   .loop: 
-    mov   bl, [ecx]
-    cmp   bl, 0
+    lodsb
+    cmp   al, 0
     jz    .exit 
 
     call  printch
-    inc   ecx
     jmp   .loop
 
   .exit:
@@ -21,9 +21,9 @@ printsln:
 
 
 newline:
-  mov   bl, 0xA
+  mov   al, 0xA
   call  printch
-  mov   bl, 0xD
+  mov   al, 0xD
   call  printch
   ret
 
@@ -31,7 +31,6 @@ printch:
   ; Moving the ah <- 0E tells the BIOS we're going to commit the 
   ; TELETYPE ROUTINE. Setting character into al, and then calling
   ; INT 0x10 lets the BIOS know to print that character on the screen.
-  mov   al, bl
   mov   ah, 0x0E
   INT   0x10 ; at this point, we're assuming that the chars are already loaded into al
   ret
@@ -41,9 +40,9 @@ printwln:
   ; returns null, prints a word and a new line
   push  eax
 
-  mov   bl, '0'
+  mov   al, '0'
   call  printch
-  mov   bl, 'x'
+  mov   al, 'x'
   call  printch
 
   pop   eax ; because ah and al get manipulated by printch
@@ -84,7 +83,7 @@ printb:
 
 nibble2chr:
   ; takes eax as a nibble(4 bits, only up from 0 to 15)
-  ; returns char in ebx 
+  ; returns char in eax 
   mov   ebx, 0x10
   call  modulo ; returns the modulus in eax
 
@@ -94,13 +93,15 @@ nibble2chr:
 
   .below_ten:
     add   ebx, '0'
+    mov   eax, ebx
     ret ; return
 
   .above_ten:
     mov   ebx, 10 ; this will return a range from 0 to 5 <= [(10 to 15) % 10]
     call  modulo
     mov   ebx, eax
-
     add   ebx, 'A' ; this results in it becoming from 'A' to 'F'
+
+  mov   eax, ebx
   ret
     

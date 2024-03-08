@@ -6,7 +6,7 @@ nasm_flags = -f bin
 asm_sources = boot.asm
 
 qemu = qemu-system-i386 
-drive = hd0
+drive = hd1
 qemu_flags = -m 512
 qemu_drive = -drive file=fat:rw:$(drive)
 
