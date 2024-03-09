@@ -11,7 +11,7 @@ debug_regs:
   mov   eax, eax_s
   call  prints
   pop   eax
-  call  printwln
+  call  printdw
 
   mov   eax, ebx_s
   call  prints

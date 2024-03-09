@@ -34,9 +34,40 @@ printch:
   ; Moving the ah <- 0E tells the BIOS we're going to commit the 
   ; TELETYPE ROUTINE. Setting character into al, and then calling
   ; INT 0x10 lets the BIOS know to print that character on the screen.
+
   ; @todo shift to utilizing video memory
   mov   ah, 0x0E
   INT   0x10 ; at this point, we're assuming that the chars are already loaded into al
+  ret
+
+printdwln:
+  ; takes eax as a DWORD
+  ; returns null, prints a DWORD and a new line
+
+  push  eax
+
+  mov   al, '0'
+  call  printch
+  mov   al, 'x'  
+  call  printch
+
+  pop   eax
+
+  call  printdw
+  call  newline
+  ret
+
+printdw:
+  ; takes eax as a double word(DWORD)
+  ; returns null, prints a DWORD(32-bit / 4 bytes)
+  push  eax
+
+  shr   eax, 16
+  call  printw
+
+  pop   eax
+  call  printw
+  
   ret
 
 printwln:

@@ -25,12 +25,15 @@ jmp   _start ; this is required. otherwise it will start routines in the teletyp
 
 _start: ; this is pretty much where the bootloader logic starts.
 
-  call  debug_regs 
+  ; call  debug_regs 
 
-  call  read_disk
+  ; call  read_disk
 
-  mov   eax, 0x9000
-  call  printsln
+  ; mov   eax, 0x9000
+  ; call  printsln
+
+  mov   eax, 0xffaabbcc
+  call  printdwln
 
 
 boot_addr: db 0
