@@ -11,32 +11,32 @@ debug_regs:
   mov   eax, eax_s
   call  prints
   pop   eax
-  call  printdw
+  call  printdwln
 
   mov   eax, ebx_s
   call  prints
   pop   ebx
   mov   eax, ebx
-  call  printwln
+  call  printdwln
 
   mov   eax, ecx_s
   call  prints
   pop   ecx
   mov   eax, ecx
-  call  printwln
+  call  printdwln
 
   mov   eax, edx_s
   call  prints
   pop   edx
   mov   eax, edx
-  call  printwln
+  call  printdwln
 
   mov   eax, esp_s
   call  prints
   pop   esp
   mov   eax, esp
   add   eax, 2 ; add 2 bytes; because our current function ret pointer is also occupying 2 bytes in the stack.
-  call  printwln
+  call  printdwln
 
   call  newline
 
