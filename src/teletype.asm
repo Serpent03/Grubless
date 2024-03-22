@@ -4,6 +4,7 @@ WHITE_BLACK   equ 0x0F ; 0xFB :: Foreground color, Background color
 prints:
   pusha 
   mov   esi, eax
+  mov   edx, VMEM ; load the location of the video memory into ecx. we'll be using this.
   cld ; clear the direction flag.
   .loop: 
     lodsb
@@ -11,6 +12,7 @@ prints:
     jz    .exit 
 
     call  printch
+    add   edx, 2 ; move ecx to the next pixel address.
     jmp   .loop
 
   .exit:
@@ -22,8 +24,8 @@ printsln:
   call  newline
   ret 
 
-
 newline:
+  ; @todo newline instead has to move the cursor
   mov   al, 0xA
   call  printch
   mov   al, 0xD
@@ -35,9 +37,15 @@ printch:
   ; TELETYPE ROUTINE. Setting character into al, and then calling
   ; INT 0x10 lets the BIOS know to print that character on the screen.
 
-  ; @todo shift to utilizing video memory
-  mov   ah, 0x0E
-  INT   0x10 ; at this point, we're assuming that the chars are already loaded into al
+  ; In 32-bit mode, we no longer have access to the BIOS teletype routines
+  ; Instead, we must write directly to the video memory itself. 
+
+  ; al = character to put
+  ; ah = color of the character and the Background
+  ; ecx = address of the pixel at that video memory location
+
+  mov   ah, WHITE_BLACK
+  mov   [edx], ax ; ah => color, al => character
   ret
 
 printdwln:
@@ -68,22 +76,6 @@ printdw:
   pop   eax
   call  printw
   
-  ret
-
-printwln:
-  ; takes eax as a word
-  ; returns null, prints a word and a new line
-  push  eax
-
-  mov   al, '0'
-  call  printch
-  mov   al, 'x'
-  call  printch
-
-  pop   eax ; because ah and al get manipulated by printch
-
-  call  printw
-  call  newline
   ret
 
 

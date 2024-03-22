@@ -1,5 +1,5 @@
-[ bits 32 ]
 [ org 0x7C00 ] 
+[ bits 32 ] ; @todo print routine not working in 32 bit mode. why?
 ; https://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf; page 18.
 ; Effectively, it allows us to put an offset of 0x7c00 on the assembly addresses -
 ; meaning that we are clear of the BIOS vector tables/configurations in the memory.
@@ -7,8 +7,8 @@
 ; @todo figure out how to read a mounted device(in this case, /hd0)
 mov   [boot_addr], dl ; the BIOS stores boot drive address in dl on init.
 
-mov   ebp, 0x8000 ; @fix enable this through the stack segment instead.
-mov   esp, ebp ; @fix ebp is showing 0x0000 during printwln calls for some reason.
+; mov   ebp, 0x8000 ; @fix enable this through the stack segment instead.
+; mov   esp, ebp ; @fix ebp is showing 0x0000 during printwln calls for some reason.
 
 jmp   _start ; this is required. otherwise it will start routines in the teletype.asm file.
 
@@ -32,10 +32,15 @@ _start: ; this is pretty much where the bootloader logic starts.
   ; mov   eax, 0x9000
   ; call  printsln
 
-  mov   eax, 0xffaabbcc
-  call  printdwln
+  ; mov   eax, 0xffaabbcc
+  ; call  printdwln
 
+  mov   eax, data
+  call  prints
 
+  
+
+data:   db "hi there", 0x0
 boot_addr: db 0
 
 jmp $
