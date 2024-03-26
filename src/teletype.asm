@@ -1,6 +1,7 @@
 VMEM   equ 0xb8000 ; location of the video memory
 WHITE_BLACK   equ 0x0F ; 0xFB :: Foreground color, Background color
 
+[ BITS 32 ]
 prints:
   pusha 
   mov   esi, eax
@@ -42,13 +43,14 @@ printch:
 
   ; al = character to put
   ; ah = color of the character and the Background
-  ; ecx = address of the pixel at that video memory location
+  ; edx = address of the pixel at that video memory location
 
   mov   ah, WHITE_BLACK
-  mov   [edx], ax ; ah => color, al => character
+  mov   [edx], eax ; ah => color, al => character
   ret
 
 printdwln:
+  ; @todo re-write for protected mode
   ; takes eax as a DWORD
   ; returns null, prints a DWORD and a new line
 
