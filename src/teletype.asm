@@ -1,7 +1,6 @@
 VMEM   equ 0xb8000 ; location of the video memory
 WHITE_BLACK   equ 0x0F ; 0xFB :: Foreground color, Background color
 
-[ BITS 32 ]
 prints:
   pusha 
   mov   esi, eax
@@ -13,7 +12,6 @@ prints:
     jz    .exit 
 
     call  printch
-    add   edx, 2 ; move ecx to the next pixel address.
     jmp   .loop
 
   .exit:
@@ -47,6 +45,7 @@ printch:
 
   mov   ah, WHITE_BLACK
   mov   [edx], eax ; ah => color, al => character
+  add   edx, 2 ; move edx to the next pixel address.
   ret
 
 printdwln:

@@ -12,6 +12,7 @@ mov   esp, ebp ; @fix ebp is showing 0x0000 during printwln calls for some reaso
 jmp   _load_protected_mode ; this is required. otherwise it will start routines in the teletype.asm file.
 jmp $
 
+[ BITS 32 ]
 %include "teletype.asm"
 %include "math.asm"
 %include "utils.asm"
@@ -29,7 +30,6 @@ _load_protected_mode:
   ; and we switch to the protected memory mode(32-bit).
   call  init_gdt
 
-[ BITS 32 ]
 _start:
   mov   eax, data
   call  prints
