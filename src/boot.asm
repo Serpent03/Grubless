@@ -15,7 +15,7 @@ jmp $
 [ BITS 32 ]
 %include "teletype.asm"
 %include "math.asm"
-%include "utils.asm"
+; %include "utils.asm"
 ; %include "disk.asm"
 %include "gdt.asm"
 
@@ -35,7 +35,7 @@ _start:
   call  prints
   jmp $ ; this infinite loops need to be here, otherwise the CPU bugs out and restarts.
 
-data:   db "0xFABBCE", 0x0
+data:   db "Hello world from the 32-bit OS!", 0x0
 boot_addr: db 0
 
 times 510-($-$$) db 0
