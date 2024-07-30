@@ -1,9 +1,10 @@
 [ bits 32 ]
 
 VMEM   equ 0xb8000 ; location of the video memory
-WHITE_BLACK   equ 0x0F ; 0xFB :: Foreground color, Background color
+WHITE_BLACK   equ 0x7B ; 0xFB :: Foreground color, Background color
 
 prints:
+  ; eax = first byte of the string
   pusha 
   mov   esi, eax
   mov   edx, VMEM ; load the location of the video memory into ecx. we'll be using this.
@@ -40,6 +41,7 @@ printch:
 [ bits 16 ]
 
 prints16:
+  ; ax = first byte of the string
   pusha 
   mov   si, ax
   mov   ah, 0x0E

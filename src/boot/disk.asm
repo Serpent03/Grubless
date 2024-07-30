@@ -9,7 +9,7 @@ disk_routine:
   mov   ah, 0x02 ; bios read sector function
   mov   al, dh ; num_sectors_to_read
   mov   ch, 0 ; cylinder
-  mov   cl, 2 ; sector. 1-indexed 
+  ; mov   cl, 2 ; sector. 1-indexed 
   mov   dh, 0 ; head. 0-indexed
 
   INT   0x13 ; issue the actual interrupt
@@ -33,16 +33,18 @@ disk_routine:
   
 read_disk:
   ; bx => location where the memory is read
-  ; dl => location of the disk
   ; dh => number of sectors to read
+  ; cl => origin sector
 
   pusha 
+  push  bx
 
   mov   bx, 0
   mov   es, bx
-  mov   bx, 0x9000 ; reads the data to a location referenced by es:bx
+  pop   bx
+  ; mov   bx, 0x9000 ; reads the data to a location referenced by es:bx
 
-  mov   dh, 3 ; number of sectors to read
+  ; mov   dh, 3 ; number of sectors to read
   mov   dl, [boot_addr] ; drive address as reported by BIOS on init
 
   call  disk_routine 

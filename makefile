@@ -1,24 +1,58 @@
 build_dir = ./build
 source_dir = ./src
+bootsector_dir = $(source_dir)/boot
+kernel_dir = $(source_dir)/kernel
+driver_dir = $(source_dir)/drivers
 
 nasm = nasm
 nasm_flags = -f bin
-asm_sources = boot.asm
+cc = gcc
+ccflags = -m32 -ffreestanding -fno-pie
+ld = ld
+ldflags = -m elf_i386 -Ttext 0x1000 --oformat binary
+
+bootsector_src = boot.asm
+kernel_src = $(kernel_dir)/*.c
+
+C_SOURCES = $(wildcard $(kernel_dir)/*.c $(driver_dir)/*.c)
+C_HEADERS = $(wildcard $(kernel_dir)/*.h $(driver_dir)/*.h)
+C_OBJ = $(patsubst %.c, %.o, $(C_SOURCES))
 
 qemu = qemu-system-i386 
 drive = hd1
 qemu_flags = -m 512
 qemu_drive = -drive file=fat:rw:$(drive)
 
-all: kernel
-	$(qemu) $(build_dir)/kernel.bin
+# ---- MAKE RULES ----
 
-kernel: $(sources)
-	cd $(source_dir) && $(nasm) $(asm_sources) $(nasm_flags) -o kernel.bin && cd ..
-	mv $(source_dir)/kernel.bin $(build_dir)/
+all: $(build_dir) os run
+
+run:
+	$(qemu) $(build_dir)/os-image
+
+$(build_dir):
+	mkdir -p $(build_dir)
+
+os: kernel bootsector 
+	cat $(build_dir)/bootsector.bin $(build_dir)/kernel.bin > $(build_dir)/os-image
+
+bootsector:
+	cd $(bootsector_dir) && $(nasm) $(bootsector_src) $(nasm_flags) -o $@.bin && cd ../..
+	mv $(bootsector_dir)/$@.bin $(build_dir)/
+
+kernel: boot2kernel.o ${C_OBJ}
+	$(ld) $(ldflags) -o $@.bin $^ 
+	rm $^
+	mv $@.bin $(build_dir)/
+
+%.o: %.c $(C_HEADERS) # generic C compilation rule
+	$(cc) $(ccflags) -c $< -o $@
+
+boot2kernel.o: $(kernel_dir)/boot2kernel.asm
+	$(nasm) $(kernel_dir)/boot2kernel.asm -f elf -o boot2kernel.o
 
 clean:
-	rm $(build_dir)/kernel.bin
+	rm $(build_dir)/*
 
 debug:
 	@ if ! od -t x1 -A n $(build_dir)/kernel.bin; then \
