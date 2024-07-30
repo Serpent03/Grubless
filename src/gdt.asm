@@ -34,7 +34,7 @@ gdt_descriptor:
 ADDR_CODE_SEG equ   gdt_code_segment_descriptor - gdt_start
 ADDR_DATA_SEG equ   gdt_data_segment_descriptor - gdt_start
 
-[ BITS 16 ]
+[ bits 16 ]
 init_gdt:
   cli ; stop the interrupts until we have transitioned into the 32-bit mode
   lgdt  [gdt_descriptor] ; load the GDT address
@@ -43,7 +43,7 @@ init_gdt:
   mov   cr0, eax
   jmp   ADDR_CODE_SEG:init_seg ; we far jump into another segment to clear the prefetch cache of the CPU
 
-[ BITS 32 ]
+[ bits 32 ]
 init_seg:
   mov   ax, ADDR_DATA_SEG
   mov   ds, ax
@@ -52,7 +52,7 @@ init_seg:
   mov   ss, ax
   mov   es, ax
 
-  mov   ebp, 0x9000
+  mov   ebp, 0x90000
   mov   esp, ebp
   ; set up the segments and the stack position
 

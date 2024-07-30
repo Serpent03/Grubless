@@ -1,3 +1,4 @@
+[ bits 16 ]
 disk_routine:
   ; pass arguments through a stack:
   ; drive, cylinder, head, sector, num_sectors_to_read
@@ -8,9 +9,8 @@ disk_routine:
   mov   ah, 0x02 ; bios read sector function
   mov   al, dh ; num_sectors_to_read
   mov   ch, 0 ; cylinder
-  mov   cl, 3 ; sector. 1-indexed 
+  mov   cl, 2 ; sector. 1-indexed 
   mov   dh, 0 ; head. 0-indexed
-  ; mov   dl, 0 ; drive address(from bios start)
 
   INT   0x13 ; issue the actual interrupt
 
@@ -22,22 +22,19 @@ disk_routine:
   ret ; otherwise return!
 
   .disk_error:
-    mov   eax, err
-    call  printsln
+    mov   ax, err
+    call  prints16
     ret
 
   .disk_error_ne:
-    mov   eax, err_ne
-    call  printsln
-
+    mov   ax, err_ne
+    call  prints16
   ret
   
 read_disk:
-  ; eax = drive address | num_sectors_to_read
-  ; ebx = cylinder | head
-  ; ecx = 0x0000 | sector
-  ; return void
-  ; @todo add functionality to pass arguments to this function
+  ; bx => location where the memory is read
+  ; dl => location of the disk
+  ; dh => number of sectors to read
 
   pusha 
 
@@ -45,7 +42,7 @@ read_disk:
   mov   es, bx
   mov   bx, 0x9000 ; reads the data to a location referenced by es:bx
 
-  mov   dh, 2 ; number of sectors to read
+  mov   dh, 3 ; number of sectors to read
   mov   dl, [boot_addr] ; drive address as reported by BIOS on init
 
   call  disk_routine 
@@ -53,6 +50,6 @@ read_disk:
   popa
   ret
 
-err       db "There was an error here, buddy", 0x0
-err_ne    db "al and dh are not equal, buddy", 0x0
+err       db "DISK_ROUTINE: Out of bounds", 0x0
+err_ne    db "DISK_ROUTINE: Read less/more than expected", 0x0
 

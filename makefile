@@ -11,7 +11,7 @@ qemu_flags = -m 512
 qemu_drive = -drive file=fat:rw:$(drive)
 
 all: kernel
-	$(qemu) $(build_dir)/kernel.bin $(qemu_flags) $(qemu_drive)
+	$(qemu) $(build_dir)/kernel.bin
 
 kernel: $(sources)
 	cd $(source_dir) && $(nasm) $(asm_sources) $(nasm_flags) -o kernel.bin && cd ..
