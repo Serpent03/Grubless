@@ -21,6 +21,8 @@ call  read_disk
 ; as switching to 32 bit makes the 16-bit BIOS routines useless. So we load our 
 ; kernel **before** we make the jump to 32-bit.
 
+mov   ax, PM_INIT
+call  prints16
 call  init_gdt ; switch to 32-bit protected mode, by setting cr0 to 1.
 
 %include "gdt.asm"
@@ -29,14 +31,10 @@ call  init_gdt ; switch to 32-bit protected mode, by setting cr0 to 1.
 
 [ bits 32 ]
 _start:
-  mov   eax, PM_INIT
-  call  prints
-
   call  KERNEL_ENTRY ; LEROOOOOOYYYYYYYY JENKIIIIIIINS!
-
   jmp $ ; hang the CPU. in practice this where the kernel event loop is
 
-PM_INIT:   db "Jumping into protected mode", 0x0
+PM_INIT:   db "Jumping into protected mode...", 0x0
 boot_addr: db 0
 
 times 510-($-$$) db 0

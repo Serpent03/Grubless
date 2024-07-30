@@ -3,6 +3,7 @@ source_dir = ./src
 bootsector_dir = $(source_dir)/boot
 kernel_dir = $(source_dir)/kernel
 driver_dir = $(source_dir)/drivers
+header_dir = $(source_dir)/headers
 
 nasm = nasm
 nasm_flags = -f bin
@@ -15,7 +16,7 @@ bootsector_src = boot.asm
 kernel_src = $(kernel_dir)/*.c
 
 C_SOURCES = $(wildcard $(kernel_dir)/*.c $(driver_dir)/*.c)
-C_HEADERS = $(wildcard $(kernel_dir)/*.h $(driver_dir)/*.h)
+C_HEADERS = $(wildcard $(header_dir)/*/*.h)
 C_OBJ = $(patsubst %.c, %.o, $(C_SOURCES))
 
 qemu = qemu-system-i386 
