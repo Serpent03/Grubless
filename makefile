@@ -2,13 +2,13 @@ build_dir = ./build
 source_dir = ./src
 bootsector_dir = $(source_dir)/boot
 kernel_dir = $(source_dir)/kernel
-driver_dir = $(source_dir)/drivers
+driver_dir = $(source_dir)/driver
 header_dir = $(source_dir)/headers
 
 nasm = nasm
 nasm_flags = -f bin
 cc = gcc
-ccflags = -m32 -ffreestanding -fno-pie
+ccflags = -m32 -ffreestanding -fno-pie -nostdlib
 ld = ld
 ldflags = -m elf_i386 -Ttext 0x1000 --oformat binary
 
@@ -53,7 +53,9 @@ boot2kernel.o: $(kernel_dir)/boot2kernel.asm
 	$(nasm) $(kernel_dir)/boot2kernel.asm -f elf -o boot2kernel.o
 
 clean:
-	rm $(build_dir)/*
+	rm -rf $(build_dir)/* ;
+	rm -rf ./*.o;
+	rm -rf $(source_dir)/*/*.o
 
 debug:
 	@ if ! od -t x1 -A n $(build_dir)/kernel.bin; then \

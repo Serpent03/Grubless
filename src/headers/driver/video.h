@@ -1,12 +1,12 @@
 #pragma once
 
-#include "./common.h"
+#include "../sys/common.h"
 
 #define VMEMLOC 0xb8000
 #define WIDTH 80
 #define HEIGHT 25
-#define REG_SCREEN_CTRL 0x3D4
-#define REG_SCREEN_DATA 0x3D5
+#define CRT_ADDR_REG 0x3D4
+#define CRT_DATA_REG 0x3D5
 
 enum COLOR {
   VGA_COLOR_BLACK = 0,
@@ -32,6 +32,12 @@ void printch(uint8 c);
 
 /* Write string STR to the video terminal. */
 void prints(uint8 *str);
+
+/* Write integer D to the video terminal. */
+void printd(int32 d);
+
+/* Write hex H to the video terminal. */
+void printh(uint32 h);
 
 /* Clear out the video terminal. */
 void cls();

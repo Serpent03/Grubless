@@ -1,4 +1,4 @@
-#include "../headers/sys/common.h"
+#include "../headers/sys/hal.h"
 
 uint8 port_byte_read(uint16 P) {
   uint8 result;
