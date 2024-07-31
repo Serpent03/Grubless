@@ -14,7 +14,7 @@ mov   sp, bp
 ; dh => number of sectors to read
 ; cl => origin sector
 mov   bx, 0x1000
-mov   dh, 9
+mov   dh, 10
 mov   cl, 2
 call  read_disk 
 ; we can utilize the BIOS read functiony ONLY before switching to protected mode -

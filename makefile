@@ -8,7 +8,7 @@ header_dir = $(source_dir)/headers
 nasm = nasm
 nasm_flags = -f bin
 cc = gcc
-ccflags = -m32 -ffreestanding -fno-pie -nostdlib
+ccflags = -m32 -ffreestanding -fno-pie -nostdlib -fno-stack-protector -fno-builtin -nostdinc -Wall -I.
 ld = ld
 ldflags = -m elf_i386 -Ttext 0x1000 --oformat binary
 

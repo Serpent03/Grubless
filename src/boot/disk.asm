@@ -52,6 +52,6 @@ read_disk:
   popa
   ret
 
-err       db "DISK_ROUTINE: Out of bounds", 0x0
-err_ne    db "DISK_ROUTINE: Read less/more than expected", 0x0
+err       db "DSKRTN: OUT_BOUNDS", 0x0
+err_ne    db "DSKRTN: READ_UNEQL", 0x0
 

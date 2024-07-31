@@ -7,11 +7,7 @@ uint16 x, y;
 uint8 color;
 uint16 *vmem_ptr;
 
-uint16 xyton(uint16 x, uint16 y) {
-  // assert(x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT, "X and Y not in
-  // bounds.");
-  return y * WIDTH + x;
-}
+uint16 xyton(uint16 x, uint16 y) { return y * WIDTH + x; }
 
 void set_cursor(uint16 n) {
   /* CRT_ADDR_REG decides where the data goes, and then CRT_DATA_REG actually
@@ -43,6 +39,21 @@ void cls() {
   y = 0;
 }
 
+void scroll(uint16 n) {
+  if (n <= 0)
+    return;
+  for (uint16 i = 0; i < n; i++) {
+    uint16 *row = (uint16 *)VMEMLOC;
+    for (uint16 j = 0; j < HEIGHT - 1; j++) {
+      memcpyw(row, row + WIDTH, WIDTH);
+      row += WIDTH;
+    }
+  }
+  x = y - n < 0 ? 0 : x; // if we're clearing the whole screen, reset it
+  y = y - n >= 0 ? y - n : 0;
+  set_cursor(xyton(x, y));
+}
+
 void printch(uint8 c) {
   uint16 vchar = ((uint16)(color) << 8) | c;
   uint16 cursor;
@@ -63,21 +74,20 @@ void printch(uint8 c) {
     cursor = xyton(x, y);
   }
   if (y >= HEIGHT) {
-    cls();
+    scroll(5);
     cursor = xyton(x, y);
   }
   cursor = xyton(x, y);
   vmem_ptr[cursor] = vchar;
   x++;
+  set_cursor(cursor);
 }
 
-void prints(uint8 *str) {
+void prints(int8 *str) {
   char c;
-  uint16 cursor;
-  while (c = *str++) {
+  while ((c = (*str++))) {
     printch(c);
   }
-  set_cursor(cursor);
 }
 
 void printd(int32 d) {
@@ -93,8 +103,33 @@ void printd(int32 d) {
   }
 }
 
+char itoh(uint8 i) {
+  char c;
+  if (i >= 0 && i <= 9) {
+    c = '0' + i;
+  } else if (i >= 10 && i <= 15) {
+    c = 'A' + i % 10;
+  }
+  return c;
+}
+
 void printh(uint32 h) {
-  
+  int n = 0;
+  uint32 t = h;
+  while (t > 0) {
+    n++;
+    t /= 16;
+  }
+  char hex[n];
+  uint32 idx = 0;
+  while (h > 0) {
+    hex[idx++] = itoh(h % 16);
+    h /= 16;
+  }
+  prints("0x");
+  while (idx--) {
+    printch(hex[idx]);
+  }
 }
 
 void init_video() {

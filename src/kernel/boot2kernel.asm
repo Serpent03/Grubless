@@ -4,6 +4,6 @@
 ; some other function that per-chance got inserted into memory before main().
 
 [ bits 32 ]
-[ extern main ]
-call    main
+[ extern kernel_setup ]
+call    kernel_setup
 jmp     $

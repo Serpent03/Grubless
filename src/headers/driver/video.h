@@ -31,7 +31,7 @@ enum COLOR {
 void printch(uint8 c);
 
 /* Write string STR to the video terminal. */
-void prints(uint8 *str);
+void prints(int8 *str);
 
 /* Write integer D to the video terminal. */
 void printd(int32 d);
@@ -50,6 +50,9 @@ void set_bg_color(uint8 col);
 
 /* Set the hardware cursor to a pixel N. */
 void set_cursor(uint16 n);
+
+/* Scroll the screen by N lines. */
+void scroll(uint16 n);
 
 /* Get linear memory mapping from coordinates (X, Y). 0-indexed */
 uint16 xyton(uint16 x, uint16 y);
