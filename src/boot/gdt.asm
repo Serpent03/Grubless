@@ -8,7 +8,7 @@ gdt_null:
   dd  0x0 ; dd => 4 bytes
   dd  0x0 ; we initialize two 4-byte regions in the memory. this is the null descriptor.
   
-gdt_code_segment_descriptor:
+gdt_code_segment_descriptor: ; location = 0x8(8)
   dw  0xffff
   dw  0x0
   db  0x0
@@ -16,7 +16,7 @@ gdt_code_segment_descriptor:
   db  0b11001111
   db  0x0
 
-gdt_data_segment_descriptor:
+gdt_data_segment_descriptor: ; location = 0x10(16)
   dw  0xffff
   dw  0x0
   db  0x0
@@ -45,6 +45,7 @@ init_gdt:
 
 [ bits 32 ]
 init_seg:
+  ; move all the stack segments/regs to data segment of the GDT.
   mov   ax, ADDR_DATA_SEG
   mov   ds, ax
   mov   fs, ax

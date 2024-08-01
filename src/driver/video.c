@@ -126,7 +126,6 @@ void printh(uint32 h) {
     hex[idx++] = itoh(h % 16);
     h /= 16;
   }
-  prints("0x");
   while (idx--) {
     printch(hex[idx]);
   }
