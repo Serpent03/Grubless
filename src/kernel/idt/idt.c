@@ -21,7 +21,8 @@ extern void isr8();
 extern void isr9();
 extern void isr10();
 
-void set_idt_entry(uint8 interrupt_id, uint32 addr, uint16 segment_selector, uint8 attributes) {
+void set_idt_entry(uint8 interrupt_id, uint32 addr, uint16 segment_selector,
+                   uint8 attributes) {
   g_IDT_table[interrupt_id].addr_high = (addr >> 16) & 0xFFFF;
   g_IDT_table[interrupt_id].addr_low = addr & 0xFFFF;
   g_IDT_table[interrupt_id].segment_selector = segment_selector;
@@ -31,7 +32,7 @@ void set_idt_entry(uint8 interrupt_id, uint32 addr, uint16 segment_selector, uin
 
 void install_idt() {
   /* Install the IDT through this function. */
-  memset((void*)&g_IDT_table, 0, sizeof(idt_entry) * 256);
+  memset((void *)&g_IDT_table, 0, sizeof(idt_entry) * 256);
   g_IDTDescriptor.limit = (sizeof(idt_entry) * 256) - 1;
   g_IDTDescriptor.base = g_IDT_table;
   set_idt_entry(0, (uint32)isr0, 0x8, 0x8E);
@@ -43,8 +44,8 @@ void install_idt() {
   set_idt_entry(8, (uint32)isr8, 0x8, 0x8E);
 }
 
-void init_idt() { 
+void init_idt() {
   install_idt();
-  load_idt(&g_IDTDescriptor); 
+  load_idt(&g_IDTDescriptor);
   prints(">>IDT installed..\n");
 }

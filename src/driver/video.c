@@ -2,6 +2,7 @@
 #include "../headers/sys/hal.h"
 #include "../headers/util/assert.h"
 #include "../headers/util/mem.h"
+#include "../headers/util/string.h"
 
 uint16 x, y;
 uint8 color;
@@ -83,6 +84,7 @@ void printch(uint8 c) {
   set_cursor(cursor);
 }
 
+/* todo: create a printf() function for better usability.. */
 void prints(int8 *str) {
   char c;
   while ((c = (*str++))) {
@@ -92,14 +94,18 @@ void prints(int8 *str) {
 
 void printd(int32 d) {
   int32 t = 0;
-  while (d > 0) {
-    t *= 10;
-    t += d % 10;
-    d /= 10;
-  }
-  while (t > 0) {
-    printch('0' + t % 10);
-    t /= 10;
+  if (d == 0) {
+    printch('0');
+  } else {
+    while (d > 0) {
+      t *= 10;
+      t += d % 10;
+      d /= 10;
+    }
+    while (t > 0) {
+      printch('0' + t % 10);
+      t /= 10;
+    }
   }
 }
 
@@ -122,18 +128,88 @@ void printh(uint32 h) {
   }
   char hex[n];
   uint32 idx = 0;
-  while (h > 0) {
-    hex[idx++] = itoh(h % 16);
-    h /= 16;
+  /* This is going to need rework */
+  if (h == 0) {
+    prints("00");
+  } else {
+    while (h > 0) {
+      hex[idx++] = itoh(h % 16);
+      h /= 16;
+    }
   }
   while (idx--) {
     printch(hex[idx]);
   }
 }
 
+uint8 is_formatting_argument(uint8 c) {
+  switch (c) {
+  case 'c':
+    return 1;
+  case 's':
+    return -1;
+  case 'h':
+  case 'd':
+    return 4;
+  }
+  return 0;
+}
+
+void printf(int8 *pattern, uint32 n, ...) {
+  /* this function is what K&C meant by blowing your foot off.. */
+  uint32 len = strlen(pattern);
+
+  uint32 tokens[n];
+  uint32 token_idx = 0;
+
+  void *p = (void*)&n;
+
+  for (uint32 i = 0; i < len; i++) {
+    if (pattern[i] == '%') {
+      uint8 size = is_formatting_argument(pattern[i+1]);
+      if (size < 0) {
+        // string
+      } else if (size > 0) {
+        p += size;
+        tokens[token_idx++] = *(uint32*)p;
+      }
+    }
+  }
+  
+  /* todo: fix the char/string printing formatting.. */
+
+  token_idx = 0;
+  for (uint32 i = 0; i < len; i++) {
+    if (pattern[i] == '%') {
+      uint8 size = is_formatting_argument(pattern[i+1]);
+      if (size < 0) {
+        // str
+      } else if (size > 0) {
+        switch (pattern[i+1]) {
+          case 'd':
+            printd(tokens[token_idx++]);
+            break;
+          case 'h':
+            printh(tokens[token_idx++]);
+            break;
+          case 'c':
+            printch((int8)tokens[token_idx++]);
+          default:
+            break;
+        }
+        i += 1; // skip the modifier.
+      } else {
+        printch(pattern[i]);
+      }
+    } else {
+      printch(pattern[i]);
+    }
+  }
+}
+
 void init_video() {
   set_fg_color(VGA_COLOR_WHITE);
-  set_bg_color(VGA_COLOR_BLUE);
+  set_bg_color(VGA_COLOR_BLACK);
   vmem_ptr = (uint16 *)VMEMLOC;
   cls();
 }

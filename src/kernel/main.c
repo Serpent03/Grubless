@@ -5,9 +5,7 @@
 
 void main() {
   /* As the setup is done in the wrapper function, this remains clean */
-  prints("Hello world, this is me from the kernel_main()\nSo this is it..\n");
-  asm volatile("int  $3");
-  prints("\nThis should load.");
+  printd(0/0);
 }
 
 void kernel_setup() {

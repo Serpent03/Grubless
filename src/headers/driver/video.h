@@ -39,6 +39,9 @@ void printd(int32 d);
 /* Write hex H to the video terminal. */
 void printh(uint32 h);
 
+/* Write formatted string PATTERN to video terminal with N arguments. */
+void printf(int8 *pattern, uint32 n, ...);
+
 /* Clear out the video terminal. */
 void cls();
 
