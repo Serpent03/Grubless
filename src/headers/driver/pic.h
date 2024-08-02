@@ -11,10 +11,10 @@
 #define PIC_MTR_OFFSET 0x20
 #define PIC_SLV_OFFSET 0x28
 /*
-  In effect: 
+  In effect:
   PIC master will remap from 0x20 .. 0x20 + 7
   PIC slave will remap to 0x28 .. 0x28 + 7
-  
+
   This exactly checks out with what we installed in
   kernel/idt/idt.c, placing iqr0 .. irq15 to these addresses.
 */
@@ -30,6 +30,7 @@ typedef enum {
 } pic_flags;
 
 typedef enum {
+  /* interrupt timer. It always osclliates at a fixed frequency */
   PIC_INTERRUPT_PIT = 0x0,
   PIC_INTERRUPT_KEYBOARD = 0x1
 } pic_interrupts;

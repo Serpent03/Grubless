@@ -3,24 +3,23 @@
 #include "../../headers/sys/hal.h"
 
 void irq_handler(regs *regdata) {
-  if (regdata->interrupt_id == PIC_INTERRUPT_PIT) {
-    port_byte_write(PIC_MTR_CMND_REG, PIC_COMMAND_EOI);
-    return;
-  }
-
   switch (regdata->interrupt_id) {
+  case PIC_INTERRUPT_PIT:
+    /* update system clock. */
+    
+    break;
   case PIC_INTERRUPT_KEYBOARD:
     /* dispatch to the keyboard driver */
     uint8 key = port_byte_read(0x60);
     printch((int8)key);
-    printd(0/0);
+    break;
   default:
-    port_byte_write(PIC_MTR_CMND_REG, PIC_COMMAND_EOI);
-    port_byte_write(PIC_SLV_CMND_REG, PIC_COMMAND_EOI);
+    break;
   }
-  if (regdata->interrupt_id == 0) {
+  if (regdata->interrupt_id >= 8) {
+    port_byte_write(PIC_SLV_CMND_REG, PIC_COMMAND_EOI);
+  } else {
     port_byte_write(PIC_MTR_CMND_REG, PIC_COMMAND_EOI);
-    return;
   }
 }
 
