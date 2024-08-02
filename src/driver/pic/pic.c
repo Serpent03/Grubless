@@ -52,8 +52,8 @@ void install_pic() {
   port_byte_write(PIC_SLV_DATA_REG, PIC_FLAG_IC4W_8086);
   io_wait();
 
-  // port_byte_write(PIC_MTR_DATA_REG, mask_master);
-  // port_byte_write(PIC_SLV_DATA_REG, mask_slave);
+  port_byte_write(PIC_MTR_DATA_REG, mask_master);
+  port_byte_write(PIC_SLV_DATA_REG, mask_slave);
 }
 
 void init_pic() {
