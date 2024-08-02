@@ -71,19 +71,19 @@ void install_idt() {
   set_idt_entry(32, (uint32)irq0, 0x8, 0x8E);
   set_idt_entry(33, (uint32)irq1, 0x8, 0x8E);
   set_idt_entry(34, (uint32)irq2, 0x8, 0x8E);
-  // set_idt_entry(35, (uint32)irq3, 0x8, 0x8E);
-  // set_idt_entry(36, (uint32)irq4, 0x8, 0x8E);
-  // set_idt_entry(37, (uint32)irq5, 0x8, 0x8E);
-  // set_idt_entry(38, (uint32)irq6, 0x8, 0x8E);
-  // set_idt_entry(39, (uint32)irq7, 0x8, 0x8E);
-  // set_idt_entry(40, (uint32)irq8, 0x8, 0x8E);
-  // set_idt_entry(41, (uint32)irq9, 0x8, 0x8E);
-  // set_idt_entry(42, (uint32)irq10, 0x8, 0x8E);
-  // set_idt_entry(43, (uint32)irq11, 0x8, 0x8E);
-  // set_idt_entry(44, (uint32)irq12, 0x8, 0x8E);
-  // set_idt_entry(45, (uint32)irq13, 0x8, 0x8E);
-  // set_idt_entry(46, (uint32)irq14, 0x8, 0x8E);
-  // set_idt_entry(47, (uint32)irq15, 0x8, 0x8E);
+  set_idt_entry(35, (uint32)irq3, 0x8, 0x8E);
+  set_idt_entry(36, (uint32)irq4, 0x8, 0x8E);
+  set_idt_entry(37, (uint32)irq5, 0x8, 0x8E);
+  set_idt_entry(38, (uint32)irq6, 0x8, 0x8E);
+  set_idt_entry(39, (uint32)irq7, 0x8, 0x8E);
+  set_idt_entry(40, (uint32)irq8, 0x8, 0x8E);
+  set_idt_entry(41, (uint32)irq9, 0x8, 0x8E);
+  set_idt_entry(42, (uint32)irq10, 0x8, 0x8E);
+  set_idt_entry(43, (uint32)irq11, 0x8, 0x8E);
+  set_idt_entry(44, (uint32)irq12, 0x8, 0x8E);
+  set_idt_entry(45, (uint32)irq13, 0x8, 0x8E);
+  set_idt_entry(46, (uint32)irq14, 0x8, 0x8E);
+  set_idt_entry(47, (uint32)irq15, 0x8, 0x8E);
 }
 
 void init_idt() {

@@ -7,11 +7,6 @@
 void main() {
   /* As the setup is done in the wrapper function, this remains clean */
   prints("done\n");
-  printf("%d\n", 1, 50);
-  printf("%d\n", 1, 50);
-  printf("%d\n", 1, 50);
-  printf("%d\n", 1, 50);
-  printf("%d\n", 1, 50);
 }
 
 void kernel_setup() {

@@ -13,6 +13,7 @@ void irq_handler(regs *regdata) {
     /* dispatch to the keyboard driver */
     uint8 key = port_byte_read(0x60);
     printch((int8)key);
+    printd(0/0);
   default:
     port_byte_write(PIC_MTR_CMND_REG, PIC_COMMAND_EOI);
     port_byte_write(PIC_SLV_CMND_REG, PIC_COMMAND_EOI);
