@@ -1,4 +1,4 @@
-#include "../headers/util/mem.h"
+#include "../../headers/util/mem.h"
 
 void memset(uint8 *src, uint8 d, uint32 n) {
   while (n--) {

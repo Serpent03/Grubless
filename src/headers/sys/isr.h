@@ -4,11 +4,11 @@
 
 typedef struct regs {
   uint32 ds;
-  uint32 edi, esi, ebp, esp, ebx, edx, ecx, eax;
+  uint32 edi, esi, ebp, _, ebx, edx, ecx, eax;
   uint32 interrupt_id;
   uint32 error_code;
   /* this is pushed automatically during an interrupt. */
-  uint32 eip, cs, eflags, esp_intr, ss;
+  uint32 eip, cs, eflags, esp, ss;
 } __attribute__((packed)) regs;
 
 typedef enum {

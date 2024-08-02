@@ -7,7 +7,7 @@ uint8 port_byte_read(uint16 P) {
 }
 
 void port_byte_write(uint16 P, uint8 N) {
-  __asm__("out %%al, %%dx" :: "a"(N), "d"(P));
+  __asm__("out %%al, %%dx" ::"a"(N), "d"(P));
 }
 
 uint16 port_word_read(uint16 P) {
@@ -17,5 +17,7 @@ uint16 port_word_read(uint16 P) {
 }
 
 void port_word_write(uint16 P, uint16 N) {
-  __asm__("out %%ax, %%dx" :: "a"(N), "d"(P));
+  __asm__("out %%ax, %%dx" ::"a"(N), "d"(P));
 }
+
+void io_wait() { port_byte_write(0x80, 0); }

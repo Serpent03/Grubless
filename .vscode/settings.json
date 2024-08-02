@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "video.h": "c",
+        "idt.h": "c",
+        "mem.h": "c",
+        "hal.h": "c",
+        "pic.h": "c"
+    }
+}

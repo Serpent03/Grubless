@@ -15,13 +15,14 @@ ldflags = -m elf_i386 -Ttext 0x1000 --oformat binary
 bootsector_src = boot.asm
 kernel_src = $(kernel_dir)/*.c
 
-C_SOURCES = $(wildcard $(kernel_dir)/*.c $(kernel_dir)/*/*.c $(driver_dir)/*.c)
+C_SOURCES = $(wildcard $(kernel_dir)/*.c $(kernel_dir)/*/*.c $(driver_dir)/*.c $(driver_dir)/*/*.c)
 ASM_SOURCES = $(wildcard $(kernel_dir)/*/*.asm $(driver_dir)/*/*.asm)
 C_HEADERS = $(wildcard $(header_dir)/*/*.h)
 C_OBJ = $(patsubst %.c, %.o, $(C_SOURCES))
 ASM_OBJ = $(patsubst %.asm, %.o, $(ASM_SOURCES))
 
-qemu = qemu-system-i386 -d int
+qemu = qemu-system-i386 
+debug = -d int
 drive = hd1
 qemu_flags = -m 512
 qemu_drive = -drive file=fat:rw:$(drive)

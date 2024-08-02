@@ -90,7 +90,8 @@ isr7:
 
 [ global isr8 ]
 isr8:
-    push    8
+    cli
+    push    byte 8
     jmp     isr_stub
 
 [ global isr9 ]
@@ -134,8 +135,8 @@ isr14:
 [ global isr15 ]
 isr15:
     cli
-    push    0
-    push    15
+    push    byte 0
+    push    byte 15
     jmp     isr_stub
 
 [ global isr16 ]
