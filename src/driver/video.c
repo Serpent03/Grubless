@@ -93,18 +93,23 @@ void prints(int8 *str) {
 }
 
 void printd(int32 d) {
-  int32 t = 0;
+  uint32 n = 0;
+  uint32 t = d;
+  while (t > 0) {
+    n++;
+    t /= 10;
+  }
   if (d == 0) {
     printch('0');
   } else {
+    char dec[n];
+    uint32 idx = 0;
     while (d > 0) {
-      t *= 10;
-      t += d % 10;
+      dec[idx++] = d % 10 + '0';
       d /= 10;
     }
-    while (t > 0) {
-      printch('0' + t % 10);
-      t /= 10;
+    while (idx--) {
+      printch(dec[idx]);
     }
   }
 }
@@ -162,40 +167,40 @@ void printf(int8 *pattern, uint32 n, ...) {
   uint32 tokens[n];
   uint32 token_idx = 0;
 
-  void *p = (void*)&n;
+  void *p = (void *)&n;
 
   for (uint32 i = 0; i < len; i++) {
     if (pattern[i] == '%') {
-      uint8 size = is_formatting_argument(pattern[i+1]);
+      uint8 size = is_formatting_argument(pattern[i + 1]);
       if (size < 0) {
         // string
       } else if (size > 0) {
         p += size;
-        tokens[token_idx++] = *(uint32*)p;
+        tokens[token_idx++] = *(uint32 *)p;
       }
     }
   }
-  
+
   /* todo: fix the char/string printing formatting.. */
 
   token_idx = 0;
   for (uint32 i = 0; i < len; i++) {
     if (pattern[i] == '%') {
-      uint8 size = is_formatting_argument(pattern[i+1]);
+      uint8 size = is_formatting_argument(pattern[i + 1]);
       if (size < 0) {
         // str
       } else if (size > 0) {
-        switch (pattern[i+1]) {
-          case 'd':
-            printd(tokens[token_idx++]);
-            break;
-          case 'h':
-            printh(tokens[token_idx++]);
-            break;
-          case 'c':
-            printch((int8)tokens[token_idx++]);
-          default:
-            break;
+        switch (pattern[i + 1]) {
+        case 'd':
+          printd(tokens[token_idx++]);
+          break;
+        case 'h':
+          printh(tokens[token_idx++]);
+          break;
+        case 'c':
+          printch((int8)tokens[token_idx++]);
+        default:
+          break;
         }
         i += 1; // skip the modifier.
       } else {

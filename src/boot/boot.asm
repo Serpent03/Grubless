@@ -14,7 +14,7 @@ mov   sp, bp
 ; dh => number of sectors to read
 ; cl => origin sector
 mov   bx, 0x1000
-mov   dh, 19
+mov   dh, 20
 mov   cl, 2
 call  read_disk 
 ; we can utilize the BIOS read functiony ONLY before switching to protected mode -
@@ -31,10 +31,30 @@ call  init_gdt ; switch to 32-bit protected mode, by setting cr0 to 1.
 
 [ bits 32 ]
 _start:
+  ; We need to confirm that the 21st+ address pin is unlocked by the BIOS,
+  ; otherwise we will not able to access memory past 1MB.
+  pushad
+  mov   edi, 0x112345
+  mov   esi, 0x012345
+
+  mov   [esi], esi
+  mov   [edi], edi
+
+  cmpsd
+  popad
+
+  jne   .kernel
+
+  mov   eax, A20
+  call  prints
+  jmp   $
+
+.kernel:
   call  KERNEL_ENTRY ; LEROOOOOOYYYYYYYY JENKIIIIIIINS!
   jmp $ ; hang the CPU. in practice this where the kernel event loop is
 
 PM_INIT:   db "Jumping into protected mode...", 0x0
+A20:       db "A20 line not enabled!", 0x0
 boot_addr: db 0
 
 times 510-($-$$) db 0

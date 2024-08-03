@@ -1,12 +1,13 @@
 #include "../../headers/driver/pic.h"
 #include "../../headers/driver/video.h"
 #include "../../headers/sys/hal.h"
+#include "../../headers/sys/systimer.h"
 
 void irq_handler(regs *regdata) {
   switch (regdata->interrupt_id) {
   case PIC_INTERRUPT_PIT:
     /* update system clock. */
-    
+    pit_tick();
     break;
   case PIC_INTERRUPT_KEYBOARD:
     /* dispatch to the keyboard driver */
