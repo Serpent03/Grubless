@@ -23,22 +23,32 @@ ASM_OBJ = $(patsubst %.asm, %.o, $(ASM_SOURCES))
 
 qemu = qemu-system-i386 
 debug = -d int
+boot_drive = -hda $(build_dir)/grubless.img -boot a
 drive = hd1
 qemu_flags = -m 512
 qemu_drive = -drive file=fat:rw:$(drive)
 
+FAT12 = mkfs.fat -F 12
+BLOCK_SIZE = 512
+SECTORS = 2880
+
 # ---- MAKE RULES ----
 
-all: $(build_dir) os run
+all: $(build_dir) os drive run
 
 run:
-	$(qemu) $(build_dir)/os-image
+	$(qemu) $(boot_drive)
 
 $(build_dir):
 	mkdir -p $(build_dir)
 
 os: kernel bootsector 
 	cat $(build_dir)/bootsector.bin $(build_dir)/kernel.bin > $(build_dir)/os-image
+
+drive:
+	dd if=/dev/zero of=$(build_dir)/grubless.img bs=$(BLOCK_SIZE) count=$(SECTORS)
+	$(FAT12) $(build_dir)/grubless.img
+	dd if=$(build_dir)/os-image of=$(build_dir)/grubless.img bs=$(BLOCK_SIZE) count=$(SECTORS) conv=notrunc
 
 bootsector:
 	cd $(bootsector_dir) && $(nasm) $(bootsector_src) $(nasm_flags) -o $@.bin && cd ../..

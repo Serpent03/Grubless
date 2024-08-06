@@ -35,9 +35,9 @@ void cls() {
   /* when all you have is a hammer, everything appears to be a nail. */
   uint16 blank = ((uint16)(color) << 8) | ' ';
   memsetw((uint16 *)VMEMLOC, blank, WIDTH * HEIGHT);
-  set_cursor(xyton(0, 0));
   x = 0;
   y = 0;
+  set_cursor(xyton(0, 0));
 }
 
 void scroll(uint16 n) {

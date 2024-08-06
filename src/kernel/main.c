@@ -16,5 +16,7 @@ void kernel_setup() {
   init_idt();
   init_pic();
   init_sysclock();
+  sleep(4000);
+  cls();
   k_main();
 }
