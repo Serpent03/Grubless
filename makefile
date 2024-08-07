@@ -1,3 +1,7 @@
+DEBUG = 0
+
+# ---- MAKE DIR AND OBJECTS ----
+
 build_dir = $(PWD)/build
 source_dir = $(PWD)/src
 bootsector_dir = $(source_dir)/boot
@@ -21,7 +25,7 @@ C_HEADERS = $(wildcard $(header_dir)/*/*.h)
 C_OBJ = $(patsubst %.c, %.o, $(C_SOURCES))
 ASM_OBJ = $(patsubst %.asm, %.o, $(ASM_SOURCES))
 
-qemu = qemu-system-i386 
+qemu = qemu-system-x86_64
 debug = -d int
 boot_drive = -hda $(build_dir)/grubless.img -boot a
 drive = hd1
@@ -31,12 +35,14 @@ qemu_drive = -drive file=fat:rw:$(drive)
 FAT12 = mkfs.fat -F 12
 BLOCK_SIZE = 512
 SECTORS = 2880
+IMAGE_LABEL = "GRUBLESS"
 
 # ---- MAKE RULES ----
 
 all: $(build_dir) os drive run
 
 run:
+# ifeq($(DEBUG), 1) $(qemu) $(boot_drive) $(debug) endif
 	$(qemu) $(boot_drive)
 
 $(build_dir):
@@ -47,8 +53,10 @@ os: kernel bootsector
 
 drive:
 	dd if=/dev/zero of=$(build_dir)/grubless.img bs=$(BLOCK_SIZE) count=$(SECTORS)
-	$(FAT12) $(build_dir)/grubless.img
-	dd if=$(build_dir)/os-image of=$(build_dir)/grubless.img bs=$(BLOCK_SIZE) count=$(SECTORS) conv=notrunc
+	$(FAT12) -n $(IMAGE_LABEL) $(build_dir)/grubless.img
+	dd if=$(build_dir)/bootsector.bin of=$(build_dir)/grubless.img conv=notrunc
+# this copies the bootloader into the main FAT12 disk.
+	mcopy -i $(build_dir)/grubless.img $(build_dir)/kernel.bin "::kernel.bin"
 
 bootsector:
 	cd $(bootsector_dir) && $(nasm) $(bootsector_src) $(nasm_flags) -o $@.bin && cd ../..

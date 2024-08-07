@@ -1,7 +1,7 @@
 [ bits 32 ]
 
 VMEM   equ 0xb8000 ; location of the video memory
-WHITE_BLACK   equ 0x7B ; 0xFB :: Foreground color, Background color
+WHITE_BLACK   equ 0x8f ; 0xFB :: Foreground color, Background color
 
 prints:
   ; eax = first byte of the string

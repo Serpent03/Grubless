@@ -9,6 +9,7 @@
  * k_main instead */
 void k_main() {
   /* As the setup is done in the wrapper function, this remains clean */
+  prints("Yo there from the FAT12 land!\n");
 }
 
 void kernel_setup() {
@@ -16,7 +17,7 @@ void kernel_setup() {
   init_idt();
   init_pic();
   init_sysclock();
-  sleep(4000);
+  sleep(1000);
   cls();
   k_main();
 }
