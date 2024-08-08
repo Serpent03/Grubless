@@ -8,6 +8,8 @@ Grubless is an attempt at recreating a basic, 32-bit general purpose OS from scr
 - Netwide assembler(nasm) `sudo apt-get install nasm`
 - qemu(x86) `sudo apt-get install qemu-system-x86`
 - Make
+- mcopy `sudo apt install mtools`
+- mkfs.fat `sudo apt install dosfstools`
 
 ## Installation
 
