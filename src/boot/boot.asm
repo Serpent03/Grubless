@@ -53,9 +53,17 @@ mov   sp, bp
 xor   bx, bx
 mov   es, bx
 mov   bx, KERNEL_ENTRY
-mov   dh, 54
-mov   cl, 2
+mov   dh, 20 ; kernel code is about 10kB. 1 sector = 512B, 20 = 10kB.
+mov   cl, 34 
 call  read_disk 
+
+; phase 2 of the bootloader is stored at sector 33 of the disk by FAT12.
+; since BIOS read disk function is 1-indexed, we have to make it sector 34 and put
+; it into cl. Also, this is hardcoded to load contents at sector 33 of the disk
+; so it will only work for FAT12 formatted drives for the moment. A more sophisticated
+; method would be to either look up the actual location from the allocation tables,
+; or to always load the data stored at the first cluster of the data area.
+
 ; we can utilize the BIOS read functiony ONLY before switching to protected mode -
 ; as switching to 32 bit makes the 16-bit BIOS routines useless. So we load our 
 ; kernel **before** we make the jump to 32-bit.
@@ -91,7 +99,7 @@ _start:
 .kernel:
 
   mov   eax, dword [KERNEL_ENTRY]
-  cmp   eax, 0x00fffff0 ; I wonder why this value is produced at 0x1000.
+  cmp   eax, 0x03fffff0 ; I wonder why this value is produced at 0x1000.
   je    .hang
 
   call  KERNEL_ENTRY ; LEROOOOOOYYYYYYYY JENKIIIIIIINS!

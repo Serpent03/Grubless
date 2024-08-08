@@ -1,5 +1,3 @@
-DEBUG = 0
-
 # ---- MAKE DIR AND OBJECTS ----
 
 build_dir = $(PWD)/build
@@ -39,11 +37,13 @@ IMAGE_LABEL = "GRUBLESS"
 
 # ---- MAKE RULES ----
 
-all: $(build_dir) os drive run
+all: $(build_dir) os drive
 
 run:
-# ifeq($(DEBUG), 1) $(qemu) $(boot_drive) $(debug) endif
 	$(qemu) $(boot_drive)
+
+run_debug:
+	$(qemu) $(boot_drive) $(debug)
 
 $(build_dir):
 	mkdir -p $(build_dir)
@@ -85,8 +85,3 @@ clean:
 	rm -rf $(build_dir)/* ;
 	rm -rf ./*.o;
 	rm -rf $(source_dir)/*/*.o
-
-debug:
-	@ if ! od -t x1 -A n $(build_dir)/kernel.bin; then \
-		echo 'Run "make kernel" to build a binary first!'; \
-	fi
