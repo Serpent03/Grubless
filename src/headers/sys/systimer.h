@@ -5,7 +5,7 @@
 #define OSCILLATOR_FREQ 1193180 /* default tick in Hz */
 #define LOWEST_POSSIBLE_FREQ 18
 #define DEFAULT_PIT_FREQ 100
-#define DEFAULT_PIT_PRECISION 1000 /* milliseconds */
+#define DEFAULT_PIT_PRECISION 50 /* milliseconds */
 
 #define PIT_CMND_REG 0x43
 #define PIT1_DATA_REG 0x40
