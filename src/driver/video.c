@@ -2,6 +2,7 @@
 #include "../headers/sys/hal.h"
 #include "../headers/util/assert.h"
 #include "../headers/util/mem.h"
+#include "../headers/sys/common.h"
 #include "../headers/util/string.h"
 
 uint16 x, y;
@@ -120,6 +121,8 @@ char itoh(uint8 i) {
     c = '0' + i;
   } else if (i >= 10 && i <= 15) {
     c = 'A' + i % 10;
+  } else {
+    assert(false, "out of range element in itoh. make sure you are converting a hex!");
   }
   return c;
 }

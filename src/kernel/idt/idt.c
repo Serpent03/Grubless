@@ -75,8 +75,17 @@ void install_idt() {
   set_idt_entry(6, (uint32)isr6, 0x8, 0x8E);
   set_idt_entry(7, (uint32)isr7, 0x8, 0x8E);
   set_idt_entry(9, (uint32)isr8, 0x8, 0x8E);
-  set_idt_entry(9, (uint32)isr9, 0x8, 0x8E);
+  set_idt_entry(10, (uint32)isr10, 0x8, 0x8E);
+  set_idt_entry(11, (uint32)isr11, 0x8, 0x8E);
+  set_idt_entry(12, (uint32)isr12, 0x8, 0x8E);
+  set_idt_entry(13, (uint32)isr13, 0x8, 0x8E);
+  set_idt_entry(14, (uint32)isr14, 0x8, 0x8E);
   set_idt_entry(15, (uint32)isr15, 0x8, 0x8E);
+  set_idt_entry(16, (uint32)isr16, 0x8, 0x8E);
+  set_idt_entry(17, (uint32)isr17, 0x8, 0x8E);
+  set_idt_entry(18, (uint32)isr18, 0x8, 0x8E);
+  set_idt_entry(19, (uint32)isr19, 0x8, 0x8E);
+  set_idt_entry(20, (uint32)isr20, 0x8, 0x8E);
 
   /* these are where we remap the PIC interrupts to. */
   set_idt_entry(32, (uint32)irq0, 0x8, 0x8E);

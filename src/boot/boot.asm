@@ -53,7 +53,7 @@ mov   sp, bp
 xor   bx, bx
 mov   es, bx
 mov   bx, KERNEL_ENTRY
-mov   dh, 20 ; kernel code is about 10kB. 1 sector = 512B, 20 = 10kB.
+mov   dh, 30 ; kernel code is about 10kB. 1 sector = 512B, 20 = 10kB. Read 30 for safety.
 mov   cl, 34 
 call  read_disk 
 

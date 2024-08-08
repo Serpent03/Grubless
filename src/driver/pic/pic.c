@@ -3,6 +3,40 @@
 #include "../../headers/sys/hal.h"
 #include "../../headers/sys/systimer.h"
 
+/**
+ * Below is the IRQ handling diagram for clarity.
+
+ *                                      TO CPU      
+ *                                         ▲        
+ *                                         │        
+ *                                         │        
+ *                                    ┌────┴───┐    
+ *                                    │  INTR  │    
+ *                                    │        │    
+ *                         PRINTER───►│ I7     │    
+ *                          FLOPPY───►│ I6     │    
+ *                             PIR───►│ I5     │    
+ *                            COM1───►│ I4     │    
+ *                            COM2───►│ I3     │    
+ *                  ┌────────────────►│ I2     │    
+ *                  │     KEYBOARD───►│ I1     │    
+ *                  │          PIT───►│ I0     │    
+ *             ┌────┴───┐             └────────┘    
+ *             │  INTR  │               MASTER      
+ *             │        │                PIC        
+ *    IDE#2───►│ I7     │                           
+ *    IDE#1───►│ I6     │                           
+ *      FPU───►│ I5     │                           
+ *    MOUSE───►│ I4     │                           
+ *      PIR───►│ I3     │                           
+ *      PIR───►│ I2     │                           
+ *      PIR───►│ I1     │                           
+ *  RT CLOCK──►│ I0     │                           
+ *             └────────┘                           
+ *               SLAVE                              
+ *                PIC                               
+*/
+
 void irq_handler(regs *regdata) {
   switch (regdata->interrupt_id) {
   case PIC_INTERRUPT_PIT:
