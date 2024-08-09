@@ -68,6 +68,16 @@ call  read_disk
 ; as switching to 32 bit makes the 16-bit BIOS routines useless. So we load our 
 ; kernel **before** we make the jump to 32-bit.
 
+; A FAT12 file structure for clarity. The numbers below each block
+; show how many sectors each "section" takes.
+; ┌───────────┬─────────────────┬───────────────┬─────────────────────┐  
+; │           │                 │               │                     │  
+; │  RESERVED │ FILE ALLOCATION │FILE ALLOCATION│         DATA        │  
+; │  SECTION  │     TABLE 1     │    TABLE 2    │        SEC0ION      │  
+; │           │                 │               │                     │  
+; └───────────┴─────────────────┴───────────────┴─────────────────────┘  
+; 0           1                 9               18                  2880 
+
 mov   ax, PM_INIT
 call  prints16
 call  init_gdt ; switch to 32-bit protected mode, by setting cr0 to 1.

@@ -1,8 +1,9 @@
 #include "../headers/driver/video.h"
+#include "../headers/sys/common.h"
 #include "../headers/sys/hal.h"
 #include "../headers/util/assert.h"
+#include "../headers/util/math.h"
 #include "../headers/util/mem.h"
-#include "../headers/sys/common.h"
 #include "../headers/util/string.h"
 
 uint16 x, y;
@@ -44,10 +45,12 @@ void cls() {
 void scroll(uint16 n) {
   if (n <= 0)
     return;
+  uint16 blank = ((uint16)(color) << 8) | ' ';
   for (uint16 i = 0; i < n; i++) {
     uint16 *row = (uint16 *)VMEMLOC;
     for (uint16 j = 0; j < HEIGHT - 1; j++) {
       memcpyw(row, row + WIDTH, WIDTH);
+      memsetw(row + WIDTH, blank, WIDTH);
       row += WIDTH;
     }
   }
@@ -58,30 +61,51 @@ void scroll(uint16 n) {
 
 void printch(uint8 c) {
   uint16 vchar = ((uint16)(color) << 8) | c;
+  uint16 blank = ((uint16)color << 8) | ' ';
   uint16 cursor;
+  bool is_action_char = false;
+
   switch (c) {
-  case '\r':
+  case '\r': /* return carriage */
     x = 0;
-    return;
-  case '\n':
+    cursor = xyton(x, y);
+    set_cursor(cursor);
+    is_action_char = true;
+    break;
+  case '\n': /* newline */
     x = 0;
     y++;
-    return;
+    cursor = xyton(x, y);
+    set_cursor(cursor);
+    is_action_char = true;
+    break;
+  case '\b': /* backspace */
+    y = MAX(((x == 0) ? y - 1 : y), 0);
+    x = MAX(x - 1, 0);
+    /* go back a line if x = 0, otherwise stay here. */
+    cursor = xyton(x, y);
+    set_cursor(cursor);
+    vmem_ptr[cursor] = blank;
+    is_action_char = true;
+    break;
   default:
     break;
   }
+
   if (x >= WIDTH) {
     x = 0;
     y++;
-    cursor = xyton(x, y);
   }
+
   if (y >= HEIGHT) {
     scroll(5);
-    cursor = xyton(x, y);
   }
+
   cursor = xyton(x, y);
-  vmem_ptr[cursor] = vchar;
-  x++;
+  if (!is_action_char) {
+    vmem_ptr[cursor] = vchar;
+    x++;
+  }
   set_cursor(cursor);
 }
 
@@ -122,7 +146,8 @@ char itoh(uint8 i) {
   } else if (i >= 10 && i <= 15) {
     c = 'A' + i % 10;
   } else {
-    assert(false, "out of range element in itoh. make sure you are converting a hex!");
+    assert(false,
+           "out of range element in itoh. make sure you are converting a hex!");
   }
   return c;
 }
