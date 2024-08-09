@@ -41,7 +41,7 @@ file_system:            db "FAT12   "
 
 loader:
 
-KERNEL_ENTRY  equ 0x1000 ; this is where we set up the kernel entry function to be
+KERNEL_ENTRY  equ 0x10000 ; this is where we set up the kernel entry function to be
 
 mov   [boot_addr], dl ; the BIOS stores boot drive address in dl on startup.
 mov   bp, 0x8000 ; set up the stack temporarily - this will be changed during 32-bit init
@@ -50,9 +50,9 @@ mov   sp, bp
 ; es:bx => location where the memory is read
 ; dh => number of sectors to read
 ; cl => origin sector
-xor   bx, bx
+mov   bx, 0x1000
 mov   es, bx
-mov   bx, KERNEL_ENTRY
+mov   bx, 0x0
 mov   dh, 30 ; kernel code is about 10kB. 1 sector = 512B, 20 = 10kB. Read 30 for safety.
 mov   cl, 34 
 call  read_disk 
@@ -77,6 +77,7 @@ call  init_gdt ; switch to 32-bit protected mode, by setting cr0 to 1.
 %include "disk.asm"
 
 [ bits 32 ]
+[ global _start ]
 _start:
   ; We need to confirm that the 21st+ address pin is unlocked by the BIOS,
   ; otherwise we will not able to access memory past 1MB.
@@ -103,7 +104,7 @@ _start:
   je    .hang
 
   call  KERNEL_ENTRY ; LEROOOOOOYYYYYYYY JENKIIIIIIINS!
-  jmp $ ; hang the CPU. in practice this where the kernel event loop is
+  jmp   $ ; hang the CPU. in practice this where the kernel event loop is
 
 .hang:
   mov   eax, NO_KERN

@@ -12,7 +12,7 @@ nasm_flags = -f bin
 cc = gcc
 ccflags = -m32 -ffreestanding -fno-pie -nostdlib -fno-stack-protector -fno-builtin -nostdinc -Wall -I.
 ld = ld
-ldflags = -m elf_i386 -Ttext 0x1000 --oformat binary
+ldflags = -m elf_i386
 
 bootsector_src = boot.asm
 kernel_src = $(kernel_dir)/*.c
@@ -22,9 +22,10 @@ ASM_SOURCES = $(wildcard $(kernel_dir)/*/*.asm $(driver_dir)/*/*.asm)
 C_HEADERS = $(wildcard $(header_dir)/*/*.h)
 C_OBJ = $(patsubst %.c, %.o, $(C_SOURCES))
 ASM_OBJ = $(patsubst %.asm, %.o, $(ASM_SOURCES))
+LD_SOURCE = $(source_dir)/linker.ld
 
 qemu = qemu-system-x86_64
-debug = -d int
+debug = -s -S # gdb
 boot_drive = -hda $(build_dir)/grubless.img -boot a
 drive = hd1
 qemu_flags = -m 512
@@ -65,7 +66,7 @@ bootsector:
 # it is important that boot2kernel is linked first.
 kernel: boot2kernel.o $(C_OBJ) $(ASM_OBJ)
 	cd $(build_dir)\
-	&& $(ld) $(ldflags) -o $@.bin boot2kernel.o *.o \
+	&& $(ld) $(ldflags) -T $(LD_SOURCE) -o $@.bin boot2kernel.o *.o \
 	&& rm *.o \
 	&& cd $(pwd)
 
@@ -74,7 +75,7 @@ kernel: boot2kernel.o $(C_OBJ) $(ASM_OBJ)
 	mv $@ $(build_dir)
 
 %.o: %.asm $(C_HEADERS) #generic ASM compilation rule
-	$(nasm) $< -f elf -o $@
+	$(nasm) $< -f elf32 -o $@
 	mv $@ $(build_dir)
 
 boot2kernel.o: $(kernel_dir)/boot2kernel.asm

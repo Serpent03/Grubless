@@ -37,11 +37,10 @@ read_disk:
   ; cl => origin sector
 
   pusha 
-  push  bx
 
-  mov   bx, 0
-  mov   es, bx
-  pop   bx
+  ; mov   bx, 0
+  ; mov   es, bx
+  ; pop   bx
   ; mov   bx, 0x9000 ; reads the data to a location referenced by es:bx
 
   ; mov   dh, 3 ; number of sectors to read

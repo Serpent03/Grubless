@@ -3,9 +3,9 @@
 #include "../headers/driver/video.h"
 #include "../headers/util/mem.h"
 
-int8 c;
+uint8 c;
 bool blocked;
-int8 charmap[256] = {
+uint8 charmap[256] = {
     1, /* escape */
     '1',  '2', '3', '4', '5', '6',  '7',
     '8',  '9', '0', '-', '+', '\b', /* backspace */
@@ -15,13 +15,15 @@ int8 charmap[256] = {
     0,                              /* left ctrl */
 };
 
+uint8 map[2] = { '5', 1 };
+
 void record_keyboard() {
   uint8 key = port_byte_read(IOPORT_READ_PORT);
   c = charmap[key];
   // printd(key);
   // printch(' ');
   // printch(charmap[key]);
-  // printd(c);
+  // printch(c);
   // printch('\n');
   blocked = (c == 0) ? true : false;
 }
@@ -39,6 +41,5 @@ void init_ps2() {
   install_ps2();
   c = 0;
   blocked = true;
-  memset((uint8*)charmap, '1', 256);
   prints(">>>PS/2 initialized!\n");
 }
