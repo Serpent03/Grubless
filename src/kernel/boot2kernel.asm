@@ -5,5 +5,9 @@
 
 [ bits 32 ]
 [ extern kernel_setup ]
+[ extern k_main ]
+nop     ; these two NOPs are padding
+nop     ; we use them to see if we have actually loaded the kernel instructions or not
 call    kernel_setup
+call    k_main ; this saves me a lot of stack space.
 jmp     $

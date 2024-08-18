@@ -4,11 +4,9 @@
 ; Effectively, it allows us to put an offset of 0x7c00 on the assembly addresses -
 ; meaning that we are clear of the BIOS vector tables/configurations in the memory.
 
-; load_addr:
 jmp   short loader
 nop
 
-; times 0xB - $ + load_addr db 0
 ; bios parameter block. this defines the FAT12 "meta-metadata" for drivers/programs.
 oem:                    db "MSWIN4.1" ; keep for compatibility
 bytes_per_sector:       dw 512
@@ -25,7 +23,7 @@ hidden_sectors:         dd 0
 large_sector_count:     dd 0
 
 ; extended boot record. 
-drive_number:           db 0
+drive_number:           db 0x80
 flags_for_nt:           db 0
 ext_boot_signature:     db 0x29
 serial_number:          dd 0x01020304
@@ -54,7 +52,7 @@ mov   bx, 0x1000
 mov   es, bx
 mov   bx, 0x0
 mov   dh, 30 ; kernel code is about 10kB. 1 sector = 512B, 20 = 10kB. Read 30 for safety.
-mov   cl, 34 
+mov   cl, 34 ; start reading from sector 34(sector 33 actually)
 call  read_disk 
 
 ; phase 2 of the bootloader is stored at sector 33 of the disk by FAT12.
@@ -68,15 +66,19 @@ call  read_disk
 ; as switching to 32 bit makes the 16-bit BIOS routines useless. So we load our 
 ; kernel **before** we make the jump to 32-bit.
 
-; A FAT12 file structure for clarity. The numbers below each block
-; show how many sectors each "section" takes.
-; ┌───────────┬─────────────────┬───────────────┬─────────────────────┐  
-; │           │                 │               │                     │  
-; │  RESERVED │ FILE ALLOCATION │FILE ALLOCATION│         DATA        │  
-; │  SECTION  │     TABLE 1     │    TABLE 2    │        SEC0ION      │  
-; │           │                 │               │                     │  
-; └───────────┴─────────────────┴───────────────┴─────────────────────┘  
-; 0           1                 9               18                  2880 
+; A FAT12 file structure for clarity. The numbers below each section
+; show at which sector it ends.
+;                                                KERNEL.BIN IS STORED HERE(sector 33)
+;                                                         V
+; ┌───────────┬─────────────────┬───────────────┬────────┬────────────────────┐  
+; │           │                 │               │        │                    │  
+; │  RESERVED │ FILE ALLOCATION │FILE ALLOCATION│  ROOT  │       DATA         │  
+; │  SECTION  │     TABLE 1     │    TABLE 2    │  DIR   │      SECTION       │  
+; │           │                 │               │        │                    │  
+; └───────────┴─────────────────┴───────────────┴────────┴────────────────────┘  
+; 0           1                 9              18        32                2880
+;                                                ^
+;                                     METADATA ABOUT KERNEL.BIN(location, size, ..)
 
 mov   ax, PM_INIT
 call  prints16
@@ -109,9 +111,9 @@ _start:
 
 .kernel:
 
-  mov   eax, dword [KERNEL_ENTRY]
-  cmp   eax, 0x03fffff0 ; I wonder why this value is produced at 0x1000.
-  je    .hang
+  mov   ax, word [KERNEL_ENTRY]
+  cmp   ax, 0x9090 ; at the start of the kernel loader, there are two NOP instructions.
+  jne    .hang ; the disk is formatted to zero. if there was no instruction then
 
   call  KERNEL_ENTRY ; LEROOOOOOYYYYYYYY JENKIIIIIIINS!
   jmp   $ ; hang the CPU. in practice this where the kernel event loop is
