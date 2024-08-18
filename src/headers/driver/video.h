@@ -27,6 +27,14 @@ enum COLOR {
   VGA_COLOR_WHITE = 15,
 };
 
+enum ARG_TYPE {
+  ARG_TYPE_CHR = 0,
+  ARG_TYPE_STR = 1,
+  ARG_TYPE_INT = 2,
+  ARG_TYPE_HEX = 3,
+  ARG_TYPE_ESC = 4,
+};
+
 /* Write character C to the video terminal. */
 void printch(uint8 c);
 
@@ -39,8 +47,8 @@ void printd(int32 d);
 /* Write hex H to the video terminal. */
 void printh(uint32 h);
 
-/* Write formatted string PATTERN to video terminal with N arguments. */
-void printf(int8 *pattern, uint32 n, ...);
+/* Write formatted string PATTERN to video terminal. */
+void printf(char *pattern, ...);
 
 /* Clear out the video terminal. */
 void cls();
@@ -62,4 +70,3 @@ uint16 xyton(uint16 x, uint16 y);
 
 /* Initialize the video drivers. */
 void init_video();
-

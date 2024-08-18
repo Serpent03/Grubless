@@ -23,7 +23,7 @@ To run the operating system(which is more of a glorified bootloader at the momen
 
 ## How does it work?
 
-There are two "phases" of the operating system booting up: the initial boot, and then loading the kernee. Accordingly, the files for operations in both the bootup and kernel phases can be found inside `source/boot` and `source/kernel` respectively.
+There are two "phases" of the operating system booting up: the initial boot, and then loading the kernel. Accordingly, the files for operations in both the bootup and kernel phases can be found inside `source/boot` and `source/kernel` respectively.
 
 The reason that boot and kernel are different phases has to do with the fact that during bootup, an instruction size of only 16-bit is available to us.
 

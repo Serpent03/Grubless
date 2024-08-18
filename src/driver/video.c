@@ -175,68 +175,66 @@ void printh(uint32 h) {
   }
 }
 
-uint8 is_formatting_argument(uint8 c) {
+/* Get enum for an argument type C. */
+uint8 get_arg_type(uint8 c) {
   switch (c) {
   case 'c':
-    return 1;
+    return ARG_TYPE_CHR;
   case 's':
-    return -1;
-  case 'h':
+    return ARG_TYPE_STR;
+  case 'x':
+    return ARG_TYPE_HEX;
   case 'd':
-    return 4;
+    return ARG_TYPE_INT;
+  case '%':
+    return ARG_TYPE_ESC;
   }
-  return 0;
+  return -1;
 }
 
-void printf(int8 *pattern, uint32 n, ...) {
-  /* this function is what K&C meant by blowing your foot off.. */
+void printf(char *pattern, ...) {
+  /* this function is what K&R meant by blowing your foot off.. */
   uint32 len = strlen(pattern);
+  void **arg = (void **)(&pattern + 1);
+  char *str = pattern;
+  bool escape_character = false;
+  bool modifier_encountered = false;
 
-  uint32 tokens[n];
-  uint32 token_idx = 0;
-
-  void *p = (void *)&n;
-
-  for (uint32 i = 0; i < len; i++) {
-    if (pattern[i] == '%') {
-      uint8 size = is_formatting_argument(pattern[i + 1]);
-      if (size < 0) {
-        // string
-      } else if (size > 0) {
-        p += size;
-        tokens[token_idx++] = *(uint32 *)p;
-      }
+  while (*str) {
+    switch (*str) {
+    case '%':
+      modifier_encountered = true;
+      break;
+    default:
+      printch(*str);
+      break;
     }
-  }
-
-  /* todo: fix the char/string printing formatting.. */
-
-  token_idx = 0;
-  for (uint32 i = 0; i < len; i++) {
-    if (pattern[i] == '%') {
-      uint8 size = is_formatting_argument(pattern[i + 1]);
-      if (size < 0) {
-        // str
-      } else if (size > 0) {
-        switch (pattern[i + 1]) {
-        case 'd':
-          printd(tokens[token_idx++]);
-          break;
-        case 'h':
-          printh(tokens[token_idx++]);
-          break;
-        case 'c':
-          printch((int8)tokens[token_idx++]);
-        default:
-          break;
-        }
-        i += 1; // skip the modifier.
-      } else {
-        printch(pattern[i]);
+    if (modifier_encountered) {
+      uint8 arg_type = get_arg_type(*(str+1));
+      switch (arg_type) {
+      case ARG_TYPE_CHR:
+        printch(*(char **)arg);
+        break;
+      case ARG_TYPE_STR:
+        prints(*(char **)arg);
+        break;
+      case ARG_TYPE_INT:
+        printd(*(int32 **)arg);
+        break;
+      case ARG_TYPE_HEX:
+        printh(*(uint32 **)arg);
+        break;
+      case ARG_TYPE_ESC:
+        printch('%');
+        break;
+      default:
+        break;
       }
-    } else {
-      printch(pattern[i]);
+      arg++;
+      str++;
+      modifier_encountered = false;
     }
+    str++;
   }
 }
 

@@ -2,6 +2,10 @@
 
 #define true 1
 #define false 0
+#define __stdcall __attribute__((stdcall))
+#define __cdecl __attribute__((cdecl))
+#define __syscall __attribute__((syscall))
+#define __ms_abi __attribute__((ms_abi))
 
 typedef unsigned char uint8;
 typedef char int8;

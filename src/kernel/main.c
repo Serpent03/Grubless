@@ -11,9 +11,7 @@
 void k_main() {
   /* As the setup is done in the wrapper function, this remains clean */
   prints("Yo there from the FAT12 land!\n");
-  while (true) {
-    printch(get_char());
-  }
+  printf("Hi there! We're at %%d", 1);
 }
 
 void kernel_setup() {
@@ -22,7 +20,7 @@ void kernel_setup() {
   init_pic();
   init_ps2();
   init_sysclock();
-  sleep(1000);
+  sleep(100);
   cls();
-  k_main();
+  /* k_main() is called by boot2kernel. */
 }

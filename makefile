@@ -10,7 +10,7 @@ header_dir = $(source_dir)/headers
 nasm = nasm
 nasm_flags = -f bin
 cc = gcc
-ccflags = -m32 -ffreestanding -fno-pie -nostdlib -fno-stack-protector -fno-builtin -nostdinc -Wall -I.
+ccflags = -m32 -ffreestanding -fno-pie -nostdlib -fno-builtin -nostdinc -Wall -fno-omit-frame-pointer
 ld = ld
 ldflags = -m elf_i386
 
@@ -24,8 +24,8 @@ C_OBJ = $(patsubst %.c, %.o, $(C_SOURCES))
 ASM_OBJ = $(patsubst %.asm, %.o, $(ASM_SOURCES))
 LD_SOURCE = $(source_dir)/linker.ld
 
-qemu = qemu-system-x86_64
-debug = -s -S # gdb
+qemu = qemu-system-i386
+debug = -s -S -monitor stdio
 boot_drive = -hda $(build_dir)/grubless.img -boot a
 drive = hd1
 qemu_flags = -m 512
