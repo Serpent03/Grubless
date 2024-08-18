@@ -111,9 +111,20 @@ _start:
 
 .kernel:
 
+  ;        KERNEL CODE/DATA      
+  ;  ┌─────┐┌─────┐┌─────┐┌─────┐ 
+  ;  │  90 ││  90 ││   E8││   ..│ 
+  ;  │ NOP ││ NOP ││ CALL││     │ 
+  ;  └─────┘└─────┘└─────┘└─────┘ 
+  ;    0x00   0x01   0x02     ..    
+  ;  The first three bytes of the kernel code are 0x90, 0x90, and E8.
+  ;  We compare  what is loaded at 0x10000 in the memory with what is supposed to be
+  ;  the first two bytes of the kernel code/data(that being two NOPs). If they match,
+  ;  then we have successfully loaded the kernel, otherwise we hang.
+
   mov   ax, word [KERNEL_ENTRY]
-  cmp   ax, 0x9090 ; at the start of the kernel loader, there are two NOP instructions.
-  jne    .hang ; the disk is formatted to zero. if there was no instruction then
+  cmp   ax, 0x9090
+  jne    .hang
 
   call  KERNEL_ENTRY ; LEROOOOOOYYYYYYYY JENKIIIIIIINS!
   jmp   $ ; hang the CPU. in practice this where the kernel event loop is
