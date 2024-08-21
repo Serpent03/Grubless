@@ -10,8 +10,7 @@
  * k_main instead */
 void k_main() {
   /* As the setup is done in the wrapper function, this remains clean */
-  prints("Yo there from the FAT12 land!\n");
-  printf("Hi there! We're at %%d", 1);
+  printf("Yo there from %s land. Bootup @ %dms", "FAT12", (uint32)get_time());
 }
 
 void kernel_setup() {

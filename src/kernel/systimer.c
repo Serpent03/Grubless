@@ -50,5 +50,5 @@ void sleep(uint64 ms) {
 
 void init_sysclock() {
   init_systime();
-  set_pit_tick_phase(DEFAULT_PIT_PRECISION); /* intercept PIT every 0.001ms */
+  set_pit_tick_phase(LOWEST_POSSIBLE_FREQ); /* intercept PIT every 0.01ms */
 }

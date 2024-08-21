@@ -194,10 +194,8 @@ uint8 get_arg_type(uint8 c) {
 
 void printf(char *pattern, ...) {
   /* this function is what K&R meant by blowing your foot off.. */
-  uint32 len = strlen(pattern);
   void **arg = (void **)(&pattern + 1);
   char *str = pattern;
-  bool escape_character = false;
   bool modifier_encountered = false;
 
   while (*str) {
@@ -210,19 +208,19 @@ void printf(char *pattern, ...) {
       break;
     }
     if (modifier_encountered) {
-      uint8 arg_type = get_arg_type(*(str+1));
+      uint8 arg_type = get_arg_type(*(str + 1));
       switch (arg_type) {
       case ARG_TYPE_CHR:
-        printch(*(char **)arg);
+        printch((char)*arg);
         break;
       case ARG_TYPE_STR:
-        prints(*(char **)arg);
+        prints((char *)*arg);
         break;
       case ARG_TYPE_INT:
-        printd(*(int32 **)arg);
+        printd((int32)*arg);
         break;
       case ARG_TYPE_HEX:
-        printh(*(uint32 **)arg);
+        printh((uint32)*arg);
         break;
       case ARG_TYPE_ESC:
         printch('%');
