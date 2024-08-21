@@ -19,7 +19,7 @@ Clone the repository onto your local machine using git:
 git clone https://github.com/Serpent03/grubless.git
 ```
 
-To run the operating system(which is more of a glorified bootloader at the moment), use `make all` to build the operating system image. If you do not want to build again, then use `make run` to run the already built binary.
+To run the operating system, use `make all` to build the operating system image. If you do not want to build again, then use `make run` to run the already built binary.
 
 ## How does it work?
 
