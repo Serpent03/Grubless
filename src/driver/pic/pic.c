@@ -46,7 +46,7 @@ void irq_handler(regs *regdata) {
     break;
   case PIC_INTERRUPT_KEYBOARD:
     /* dispatch to the keyboard driver */
-    record_keyboard();
+    keyrupt();
     break;
   default:
     break;

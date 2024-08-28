@@ -3,9 +3,9 @@
 #include "../headers/sys/hal.h"
 #include "../headers/util/mem.h"
 
-uint8 c;
+char c;
 bool blocked;
-uint8 charmap[256] = {
+char charmap[256] = {
     0,
     0, /* escape */
     '1',
@@ -34,8 +34,8 @@ uint8 charmap[256] = {
     'P',
     '[',
     ']',
-    '\n', /* enter */
-    0,    /* left ctrl */
+    '\n',           /* enter */
+    MODIFIER_LCTRL, /* left ctrl */
     'A',
     'S',
     'D',
@@ -48,7 +48,7 @@ uint8 charmap[256] = {
     ';',
     '\'',
     '`',
-    0 /* left shift */,
+    MODIFIER_LSHIFT /* left shift */,
     '\\',
     'Z',
     'X',
@@ -60,11 +60,11 @@ uint8 charmap[256] = {
     ',',
     '.',
     '/',
-    0 /* right shift */,
+    MODIFIER_RSHIFT /* right shift */,
     '*',
-    0 /* left alt */,
+    MODIFIER_LALT /* left alt */,
     ' ',
-    0 /* caps lock */,
+    MODIFIER_CAPSLOCK /* caps lock */,
     0, /* F1 */
     0,
     0,
@@ -74,27 +74,23 @@ uint8 charmap[256] = {
     0,
     0,
     0,
-    0, /* F10 */
-    0, /* numlock */
-    0, /* scroll-lock */
+    0,   /* F10 */
+    0,   /* numlock */
+    0,   /* scroll-lock */
     '7', /* numpad */
 
 };
 
-uint8 map[2] = {'5', 1};
+char shifted_charmap[128];
 
-void record_keyboard() {
-  uint8 key = port_byte_read(IOPORT_READ_PORT);
+void keyrupt() {
+  char key = port_byte_read(IOPORT_READ_PORT);
   c = charmap[key];
-  // printd(key);
-  // printch(' ');
-  // printch(charmap[key]);
-  // printch(c);
-  // printch('\n');
+  /* other logic for trigger modifier keys */
   blocked = (c == 0) ? true : false;
 }
 
-int8 get_char() {
+char get_char() {
   while (blocked) {
   }
   blocked = true;

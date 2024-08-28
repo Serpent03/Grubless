@@ -211,7 +211,7 @@ void printf(char *pattern, ...) {
       uint8 arg_type = get_arg_type(*(str + 1));
       switch (arg_type) {
       case ARG_TYPE_CHR:
-        printch((char)*arg);
+        printch((char)*arg); /* fix compiler warning. */
         break;
       case ARG_TYPE_STR:
         prints((char *)*arg);
