@@ -24,7 +24,7 @@ C_OBJ = $(patsubst %.c, %.o, $(C_SOURCES))
 ASM_OBJ = $(patsubst %.asm, %.o, $(ASM_SOURCES))
 LD_SOURCE = $(source_dir)/linker.ld
 
-qemu = qemu-system-i386
+qemu = qemu-system-x86_64
 debug = -s -S -monitor stdio
 boot_drive = -hda $(build_dir)/grubless.img -boot a
 drive = hd1
