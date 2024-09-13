@@ -18,7 +18,7 @@ bool is_alnum(char c) {
 
 char toggle_case(char c) {
   if (!is_alnum(c))
-    return;
+    return c;
   char d = 0;
   if (is_upper(c)) {
     d = c + 0x20;
