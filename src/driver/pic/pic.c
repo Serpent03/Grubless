@@ -49,6 +49,7 @@ void irq_handler(regs *regdata) {
     keyrupt();
     break;
   default:
+    printf("IRQ @: %d\n", regdata->interrupt_id);
     break;
   }
   if (regdata->interrupt_id >= 8) {

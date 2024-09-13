@@ -211,7 +211,9 @@ char get_char() {
   return c;
 }
 
-void install_ps2() {}
+void install_ps2() {
+  /* LED/keyboard ability query & configuration */
+}
 
 void init_ps2() {
   install_ps2();

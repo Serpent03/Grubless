@@ -32,7 +32,9 @@ typedef enum {
 typedef enum {
   /* interrupt timer. It always osclliates at a fixed frequency */
   PIC_INTERRUPT_PIT = 0x0,
-  PIC_INTERRUPT_KEYBOARD = 0x1
+  PIC_INTERRUPT_KEYBOARD = 0x1,
+  PIC_INTERRUPT_IDE_1 = 0xE,
+  PIC_INTERRUPT_IDE_2 = 0xF
 } pic_interrupts;
 
 /* Enable and remap the PICs. */
