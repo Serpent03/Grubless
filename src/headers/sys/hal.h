@@ -18,7 +18,7 @@ void port_word_write(uint16 P, uint16 N);
 uint32 port_dword_read(uint16 P);
 
 /* Write data N(u32) to a port P. */
-void port_dword_write(uint32 P, uint16 N);
+void port_dword_write(uint16 P, uint32 N);
 
 /* A simple and imprecise delay inductor. Use as less as possible. */
 void io_wait();

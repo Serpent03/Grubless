@@ -4,6 +4,7 @@
 #include "../headers/sys/common.h"
 #include "../headers/sys/idt.h"
 #include "../headers/sys/systimer.h"
+#include "../headers/driver/pci.h"
 #include "../headers/util/assert.h"
 #include "../headers/util/string.h"
 
@@ -24,7 +25,8 @@ void kernel_setup() {
   init_pic();
   init_ps2();
   init_sysclock();
-  sleep(100);
+  init_pci();
+  sleep(1000 * 100000);
   cls();
   /* k_main() is called by boot2kernel. */
 }
