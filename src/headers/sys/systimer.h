@@ -4,7 +4,10 @@
 
 #define OSCILLATOR_FREQ 1193180 /* default tick in Hz */
 #define LOWEST_POSSIBLE_FREQ 18
-#define DEFAULT_PIT_PRECISION 18 /* milliseconds */
+#define DEFAULT_PIT_PRECISION 20 /* milliseconds */
+/* @fix: it seems like using PIT precision to fire every 18 milliseconds
+bugs it out. Fixing it at 19 milliseconds restores intended behavior. Not sure
+why. Currently set to fire every 20 milliseconds for the sake of consistency. */
 
 #define PIT_CMND_REG 0x43
 #define PIT1_DATA_REG 0x40

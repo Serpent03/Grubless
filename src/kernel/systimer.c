@@ -43,8 +43,8 @@ uint64 get_time() { return sys_time; }
 uint64 get_time_s() { return sys_time / 1000; }
 
 void sleep(uint64 ms) {
-  uint64 ref_time = sys_time;
-  while (ref_time + ms >= sys_time) {
+  uint64 ref_time = sys_time + ms;
+  while (ref_time >= sys_time) {
   }
 }
 
