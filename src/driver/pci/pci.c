@@ -1,5 +1,6 @@
 #include "../../headers/driver/pci.h"
 #include "../../headers/sys/hal.h"
+#include "../../headers/driver/video.h"
 
 uint16 read_pci_word(uint16 bus, uint16 slot, uint16 func, uint16 offset) {
   /* read the config address(PCI_CONFIG_ADDR_REG) which contains
@@ -53,6 +54,9 @@ void probe_pci() {
   - 256 buses
   - 32 slots per bus
   - 8 functions per slot
+
+
+  EDIT: all Intel devices have the vendor ID 0x8086.. har har
    */
   for (uint16 bus_idx = 0; bus_idx < BUSES; bus_idx++) {
     for (uint16 slot_idx = 0; slot_idx < SLOTS; slot_idx++) {

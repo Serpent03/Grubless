@@ -4,7 +4,7 @@
 
 #define OSCILLATOR_FREQ 1193180 /* default tick in Hz */
 #define LOWEST_POSSIBLE_FREQ 18
-#define DEFAULT_PIT_PRECISION 100 /* milliseconds */
+#define DEFAULT_PIT_PRECISION 18 /* milliseconds */
 
 #define PIT_CMND_REG 0x43
 #define PIT1_DATA_REG 0x40
@@ -24,8 +24,14 @@ void pit_tick();
 /* Return current system time in milliseconds. */
 uint64 get_time();
 
+/* Return current system time in seconds. */
+uint64 get_time_s();
+
 /* Delay the current thread for MS milliseconds. */
 void sleep(uint64 ms);
+
+/* Delay the current thread for S seconds. */
+void sleep_s(uint64 s);
 
 /* Initialize the system clock and set PIT frequency. */
 void init_sysclock();

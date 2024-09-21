@@ -29,26 +29,30 @@ void set_pit_tick_phase(uint16 freq) {
   port_byte_write(PIT1_DATA_REG, div & 0xFF);
   port_byte_write(PIT1_DATA_REG, (div >> 8) & 0xFF);
 
-  sys_tick = 0;
   sys_freq = freq;
+  sys_tick = 1000 / sys_freq;
 }
 
 void pit_tick() {
-  sys_tick++;
-  sys_time += (1000 / sys_freq);
+  sys_time += sys_tick;
   /* increment sys_time every sys_tick by 1000 / sys_freq milliseconds. */
 }
 
 uint64 get_time() { return sys_time; }
 
+uint64 get_time_s() { return sys_time / 1000; }
+
 void sleep(uint64 ms) {
   uint64 ref_time = sys_time;
   while (ref_time + ms >= sys_time) {
-    continue;
   }
+}
+
+void sleep_s(uint64 s) {
+  sleep(s * 1000);
 }
 
 void init_sysclock() {
   init_systime();
-  set_pit_tick_phase(LOWEST_POSSIBLE_FREQ); /* intercept PIT every 0.01ms */
+  set_pit_tick_phase(DEFAULT_PIT_PRECISION); /* intercept PIT every 0.01ms */
 }
