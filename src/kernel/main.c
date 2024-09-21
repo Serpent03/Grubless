@@ -12,7 +12,7 @@
  * k_main instead */
 void k_main() {
   /* As the setup is done in the wrapper function, this remains clean */
-  printf("Yo there from %s land. Bootup @ %dms with charset %c\n", "FAT12", (uint32)get_time(), 'c');
+  printf("Yo there from %s land. Bootup @ %dms with charset %c\n", "FAT12", get_time(), 'c');
 }
 
 void kernel_setup() {
@@ -22,7 +22,7 @@ void kernel_setup() {
   init_ps2();
   init_sysclock();
   init_pci();
-  sleep_s(5);
+  sleep_s(600);
   cls();
   /* k_main() is called by boot2kernel. */
 }
