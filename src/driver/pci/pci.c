@@ -53,6 +53,16 @@ uint16 get_header_type(uint16 bus, uint16 slot, uint16 function) {
   return (r0 & ~MASK_HEADER_TYPE);
 }
 
+uint32 get_bar_address(uint16 bus, uint16 slot, uint16 function,
+                       uint8 bar_offset) {
+  /* return n-th BAR value from given offset */
+  uint32 bar_address;
+  uint16 r0 = read_pci_word(bus, slot, function, bar_offset);
+  uint16 r1 = read_pci_word(bus, slot, function, bar_offset + 0x2);
+  bar_address = (((uint32)r1) << 16) | r0;
+  return bar_address & ~0xF;
+}
+
 void probe_pci() {
   /* At bootup, we have no idea of what devices are connected,
   and what configuration/addresses they have taken through PCI; thus
@@ -76,9 +86,12 @@ void probe_pci() {
         uint16 header = get_header_type(bus_idx, slot_idx, func_idx);
         uint16 class = get_class_id(bus_idx, slot_idx, func_idx);
         uint16 subclass = get_subclass_id(bus_idx, slot_idx, func_idx);
-        printf("VNDR: 0x%x, DEV: 0x%x, HDR: 0x%x, Cl: 0x%x, SubCl: 0x%x\n", vendor, device,
-               header, class, subclass);
+        printf("VNDR: 0x%x, DEV: 0x%x, HDR: 0x%x, Cl: 0x%x, SubCl: 0x%x\n",
+               vendor, device, header, class, subclass);
         /* Add PCI devices in a logical manner */
+        uint32 bar0 =
+            get_bar_address(bus_idx, slot_idx, func_idx, OFFSET_PCI0_BAR0);
+        printf("BAR0 : %x\n", bar0);
       }
     }
   }
