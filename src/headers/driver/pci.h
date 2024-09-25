@@ -67,8 +67,7 @@ typedef enum {
   OFFSET_PCI0_CISPTR1 = 0x2A,
   OFFSET_PCI0_SUBSYS_VENDOR_ID = 0x2C,
   OFFSET_PCI0_SUBSYS_ID = 0x2E,
-  OFFSET_PCI0_ROM_BARW0 = 0x30,
-  OFFSET_PCI0_ROM_BARW1 = 0x32,
+  OFFSET_PCI0_ROM_BAR = 0x30,
   OFFSET_PCI0_CAPABILITIES_PTR = 0x34,
   OFFSET_PCI0_INTR_LINE = 0x3C,
   OFFSET_PCI0_INTR_PIN = 0x3C,
@@ -77,6 +76,8 @@ typedef enum {
 } PCI0_WORD_OFFSET;
 
 typedef enum {
+  MASK_PCI_BAR_IO = 0x3,
+  MASK_PCI_BAR_MMIO = 0xF,
   MASK_PCI0_CAPABILITIES_PTR = 0xFF00,
   MASK_PCI0_INTR_LINE = 0xFF00,
   MASK_PCI0_INTR_PIN = 0x00FF,
@@ -84,11 +85,18 @@ typedef enum {
   MASK_PCI0_MAX_LATENCY = 0x00FF,
 } PCI0_WORD_MASK;
 
-typedef struct {
+typedef struct __pci_device_id {
+  uint16 bus;
+  uint16 slot;
+  uint16 function;
+} pci_device_id;
+
+typedef struct __pci_device {
   uint16 vendor_id;
   uint16 device_id;
   uint16 class_id;
   uint16 subclass_id;
+  struct __pci_device_id *table;
 } pci_device;
 
 /* Initialize the PCI bus. */

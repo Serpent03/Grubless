@@ -56,11 +56,18 @@ uint16 get_header_type(uint16 bus, uint16 slot, uint16 function) {
 uint32 get_bar_address(uint16 bus, uint16 slot, uint16 function,
                        uint8 bar_offset) {
   /* return n-th BAR value from given offset */
-  uint32 bar_address;
-  uint16 r0 = read_pci_word(bus, slot, function, bar_offset);
-  uint16 r1 = read_pci_word(bus, slot, function, bar_offset + 0x2);
-  bar_address = (((uint32)r1) << 16) | r0;
-  return bar_address & ~0xF;
+  uint32 bar_address, return_address;
+  uint32 r0 = read_pci_word(bus, slot, function, bar_offset);
+  uint32 r1 = read_pci_word(bus, slot, function, bar_offset + 0x2);
+  return_address = (r1 << 16) | r0;
+  if (return_address & 0x1) {
+    /* MMIO */
+    bar_address = return_address & ~MASK_PCI_BAR_MMIO;
+  } else {
+    /* I/O mapped */
+    bar_address = return_address & ~MASK_PCI_BAR_IO;
+  }
+  return bar_address;
 }
 
 void probe_pci() {
@@ -71,6 +78,10 @@ void probe_pci() {
   - 32 slots per bus
   - 8 functions per slot
 
+  - Store all devices by VENDOR, DEVICE, CLASS and SUBCLAS ID.
+  - Write ATA/IDE drivers through the PCI. Use the PROG-IF to
+  ensure that they are in PCI mode, and then access through
+  the BARs.
 
   EDIT: all Intel devices have the vendor ID 0x8086.. har har
    */
@@ -91,7 +102,6 @@ void probe_pci() {
         /* Add PCI devices in a logical manner */
         uint32 bar0 =
             get_bar_address(bus_idx, slot_idx, func_idx, OFFSET_PCI0_BAR0);
-        printf("BAR0 : %x\n", bar0);
       }
     }
   }
