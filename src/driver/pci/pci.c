@@ -28,6 +28,21 @@ uint16 read_pci_word(uint16 bus, uint16 slot, uint16 func, uint16 offset) {
   return ret_value;
 }
 
+void write_pci_word(uint16 bus, uint16 slot, uint16 function, uint16 offset,
+                    uint16 data) {
+  uint64 qw_bus = (uint64)bus;
+  uint64 qw_slot = (uint64)slot;
+  uint64 qw_func = (uint64)function;
+  uint64 qw_offset = (uint64)offset;
+  uint64 address = (uint64)((qw_bus << 16) | (qw_slot << 11) | (qw_func) << 8 |
+                            (qw_offset & 0xFC) | (uint32)(0x80000000));
+
+  port_dword_write(PCI_CONFIG_ADDR_REG,
+                   address); /* we select the device to write to. */
+  uint16 data_port = (PCI_CONFIG_DATA_REG + offset) & 0x2;
+  port_word_write(data_port, data);
+}
+
 uint16 get_vendor_id(uint16 bus, uint16 slot, uint16 function) {
   uint16 r0 = read_pci_word(bus, slot, function, OFFSET_VENDOR_ID);
   return r0;
