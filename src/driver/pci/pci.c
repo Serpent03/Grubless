@@ -5,6 +5,24 @@
 uint16 dev;
 pci_device pci_device_t[256];
 
+uint32 read_pci_dword(uint16 bus, uint16 slot, uint16 func, uint16 offset) {
+  /* read the config address(PCI_CONFIG_ADDR_REG) which contains
+  details on vendor, device and other miscellaneous items.
+
+  The flow for probe goes as follows:
+  - write to 0xCF8(ADDR_REG)
+  - read from 0xCFC(DATA_REG)
+  */
+
+  uint32 address = ((uint32)(bus << 16)) | ((uint32)(slot << 11)) | ((uint32)(func << 8)) | 1 << 31 | offset;
+  port_dword_write(PCI_CONFIG_ADDR_REG,
+                   address); /* we select the device to read from. */
+
+  uint32 r0;
+  r0 = (uint32)(port_dword_read(PCI_CONFIG_DATA_REG) >> ((offset & 2) * 8));
+  return r0;
+}
+
 uint16 read_pci_word(uint16 bus, uint16 slot, uint16 func, uint16 offset) {
   /* read the config address(PCI_CONFIG_ADDR_REG) which contains
   details on vendor, device and other miscellaneous items.
@@ -55,17 +73,22 @@ uint16 get_device_id(uint16 bus, uint16 slot, uint16 function) {
 
 uint16 get_class_id(uint16 bus, uint16 slot, uint16 function) {
   uint16 r0 = read_pci_word(bus, slot, function, OFFSET_CLASS_ID);
-  return (r0 & ~MASK_CLASS_ID) >> 8;
+  return (r0 & MASK_CLASS_ID) >> 8;
 }
 
 uint16 get_subclass_id(uint16 bus, uint16 slot, uint16 function) {
   uint16 r0 = read_pci_word(bus, slot, function, OFFSET_SUBCLASS_ID);
-  return (r0 & ~MASK_SUBCLASS_ID);
+  return (r0 & MASK_SUBCLASS_ID);
 }
 
 uint16 get_header_type(uint16 bus, uint16 slot, uint16 function) {
   uint16 r0 = read_pci_word(bus, slot, function, OFFSET_HEADER_TYPE);
-  return (r0 & ~MASK_HEADER_TYPE);
+  return (r0 & MASK_HEADER_TYPE);
+}
+
+uint8 get_prof_if(uint16 bus, uint16 slot, uint16 function) {
+  uint16 r0 = read_pci_word(bus, slot, function, OFFSET_PROG_IF);
+  return (r0 & MASK_PROG_IF) >> 8;
 }
 
 uint32 get_bar_address(uint16 bus, uint16 slot, uint16 function,
@@ -98,6 +121,10 @@ void probe_pci() {
   ensure that they are in PCI mode, and then access through
   the BARs.
 
+  - The issue is how exactly do I store device information..
+  there are a lot of classes that be, and implementing some
+  enum for all of them would be a massive nightmare.
+
   EDIT: all Intel devices have the vendor ID 0x8086.. har har
    */
   for (uint16 bus_idx = 0; bus_idx < BUSES; bus_idx++) {
@@ -112,11 +139,13 @@ void probe_pci() {
         uint16 header = get_header_type(bus_idx, slot_idx, func_idx);
         uint16 class = get_class_id(bus_idx, slot_idx, func_idx);
         uint16 subclass = get_subclass_id(bus_idx, slot_idx, func_idx);
+        uint8 prog_if = get_prof_if(bus_idx, slot_idx, func_idx);
         printf("VNDR: 0x%x, DEV: 0x%x, HDR: 0x%x, Cl: 0x%x, SubCl: 0x%x\n",
-               vendor, device, header, class, subclass);
+               vendor, device, header, class, subclass, prog_if);
         /* Add PCI devices in a logical manner */
         uint32 bar0 =
             get_bar_address(bus_idx, slot_idx, func_idx, OFFSET_PCI0_BAR0);
+        printf("BAR0: %x, BAR0BIT0: %x, PROGIF: %x\n", bar0, bar0 & 0x1, prog_if);
       }
     }
   }

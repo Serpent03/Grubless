@@ -27,6 +27,8 @@ LD_SOURCE = $(source_dir)/linker.ld
 qemu = qemu-system-x86_64
 debug = -s -S -monitor stdio
 boot_drive = -hda $(build_dir)/grubless.img -boot a
+network_controller = -net nic,model=rtl8139 bridge,br=ha207
+usb = -usb -device usb-ehci,id=ehci
 drive = hd1
 qemu_flags = -m 512
 qemu_drive = -drive file=fat:rw:$(drive)
@@ -41,7 +43,7 @@ IMAGE_LABEL = "GRUBLESS"
 all: $(build_dir) os drive
 
 run:
-	$(qemu) $(boot_drive)
+	$(qemu) $(boot_drive) $(usb)
 
 run_debug:
 	$(qemu) $(boot_drive) $(debug)

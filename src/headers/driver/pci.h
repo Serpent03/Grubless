@@ -28,21 +28,22 @@ typedef enum {
 } PCI_WORD_OFFSET;
 
 typedef enum {
-  MASK_REVISION_ID = 0xFF00,
-  MASK_PROG_IF = 0x00FF,
-  MASK_SUBCLASS_ID = 0xFF00,
-  MASK_CLASS_ID = 0x00FF,
-  MASK_CACHE_LINE_SIZE = 0xFF00,
-  MASK_LATENCY_TIMER = 0x00FF,
-  MASK_HEADER_TYPE = 0xFF00,
-  MASK_BIST = 0x00FF,
+  MASK_REVISION_ID = ~0xFF00,
+  MASK_PROG_IF = ~0x00FF,
+  MASK_SUBCLASS_ID = ~0xFF00,
+  MASK_CLASS_ID = ~0x00FF,
+  MASK_CACHE_LINE_SIZE = ~0xFF00,
+  MASK_LATENCY_TIMER = ~0x00FF,
+  MASK_HEADER_TYPE = ~0xFF00,
+  MASK_BIST = ~0x00FF,
   /* The idea is that when these mask values will be
   inverted, we will have a guarantee of only getting the data
   we want. For example:
 
+  What we want  ↓↓
   Data: 0x12345678
   Mask: 0x    FF00
-  What we want  ^^
+  What we want  ↑↑
 
   The compiler may fill in the rest of the empty mask with FF. To ensure
   that we only get the data we want(that being the last byte 0x78), we will zero
@@ -76,13 +77,13 @@ typedef enum {
 } PCI0_WORD_OFFSET;
 
 typedef enum {
-  MASK_PCI_BAR_IO = 0x3,
-  MASK_PCI_BAR_MMIO = 0xF,
-  MASK_PCI0_CAPABILITIES_PTR = 0xFF00,
-  MASK_PCI0_INTR_LINE = 0xFF00,
-  MASK_PCI0_INTR_PIN = 0x00FF,
-  MASK_PCI0_MIN_GRANT = 0xFF00,
-  MASK_PCI0_MAX_LATENCY = 0x00FF,
+  MASK_PCI_BAR_IO = ~0x3,
+  MASK_PCI_BAR_MMIO = ~0xF,
+  MASK_PCI0_CAPABILITIES_PTR = ~0xFF00,
+  MASK_PCI0_INTR_LINE = ~0xFF00,
+  MASK_PCI0_INTR_PIN = ~0x00FF,
+  MASK_PCI0_MIN_GRANT = ~0xFF00,
+  MASK_PCI0_MAX_LATENCY = ~0x00FF,
 } PCI0_WORD_MASK;
 
 typedef struct __pci_device_id {
